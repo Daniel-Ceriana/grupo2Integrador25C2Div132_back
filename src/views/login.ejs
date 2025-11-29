@@ -11,12 +11,6 @@
     <% } %>
     
     
-    <!-- Haremos el envio de datos desde el <form> de HTML, sin fetch!
-    Esto nos implicara tener que parsear datos no JSON, crearemos un nuevo middleware
-    
-    // Middleware para parsear las solicitudes POST que enviamos desde el <form> HTML
-    app.use(express.urlencoded({ extended: true }));
-    -->
     <form action="/login" method="POST" autocomplete="off" id="login-form">
     
         <label for="emailUser">Email</label>
