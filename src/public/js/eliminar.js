@@ -1,17 +1,19 @@
+import {port} from "../../api/config/environments";
+let url = `http://localhost:${port}`;
+
 // Seleccion de elementos del DOM
 let listaProductos = document.getElementById("lista-productos");
 let getProductForm = document.getElementById("getProduct-form");
-let url = "http://localhost:3000";
+
 
 
 getProductForm.addEventListener("submit", async (event) => {
     
     event.preventDefault(); // Prevenimos el envio por defecto del formulario
 
-    // Tenemos que obtener los datos del formulario, por tanto, vamos a crear un objeto FormData a partir de los datos del formulario
+    
     let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
 
-    console.log(formData); // FormData { idProd → "2" }
 
     // Transformamos a objetos JS los valores de FormData
     let data = Object.fromEntries(formData.entries());
@@ -47,7 +49,7 @@ getProductForm.addEventListener("submit", async (event) => {
 
     deleteProduct_button.addEventListener("click", event => {
         
-        event.stopPropagation(); // Evitamos la propagacion de eventos
+        event.stopPropagation();
 
         let confirmacion = confirm("Queres eliminar este producto?");
 
@@ -61,7 +63,6 @@ getProductForm.addEventListener("submit", async (event) => {
 });
 
 async function eliminarProducto(id) {
-    console.log(id); // Confirmo que recibo el id correctamente
 
     try {
         let response = await fetch(`${url}/api/products/${id}`, {
@@ -81,7 +82,7 @@ async function eliminarProducto(id) {
             alert("No se pudo eliminar el producto");
         }
 
-    } catch (error) { // El catch este, solo atrapa errores de red
+    } catch (error) {
         console.error("Error en la solicitud DELETE: ", error);
         alert("Ocurrio un error al eliminar un producto");
     }

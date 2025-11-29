@@ -1,19 +1,16 @@
+import {port} from "../../api/config/environments";
+let url = `http://localhost:${port}`;
+
 // Seleccion de elementos del DOM
-// let contenedorProductos = document.getElementById("contenedor-productos");
 let listaProductos = document.getElementById("lista-productos");
 let getProductForm = document.getElementById("getProduct-form");
-let url = "http://localhost:3000";
 
 
 getProductForm.addEventListener("submit", async (event) => {
     
     event.preventDefault(); // Prevenimos el envio por defecto del formulario
-
-    // Tenemos que obtener los datos del formulario, por tanto, vamos a crear un objeto FormData a partir de los datos del formulario
     let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
 
-    console.log(formData); // FormData { idProd → "2" }
-    // Ojo, esto no se muestra en navegadores basados en Chromium
 
     // Transformamos a objetos JS los valores de FormData
     let data = Object.fromEntries(formData.entries());
@@ -70,16 +67,3 @@ function mostrarError(message) {
     `;
 }
 
-
-/*==========================
-        Que es FormData?
-============================
-
-FormData es una interfaz nativa de JavaScript que permite crear un conjunto de pares clave-valor 
-que representan los campos de un formulario HTML y sus respectivos valores.
-
-Esta clase se utiliza principalmente para capturar y enviar datos de formularios, 
-ya sea mediante métodos como fetch o XMLHttpRequest, 
-y se encarga de formatear los datos correctamente como multipart/form-data, 
-estableciendo automáticamente los encabezados necesarios para el envío
-*/
