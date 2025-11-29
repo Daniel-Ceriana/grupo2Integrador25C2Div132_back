@@ -4,9 +4,6 @@
 
 import ProductModels from "../models/product.models.js"
 
-//////////////////
-// Get products -> Traer todos los productos
-// Similiar al addEventListener, porque se ejecuta constantemente esperando una accion para ejecutar una fucion -> elemento.addEventListener("click", () => {})
 export const getAllProducts = async (req, res) => { 
     try {
 
@@ -19,10 +16,7 @@ export const getAllProducts = async (req, res) => {
 
 
     } catch (error) {
-        // Este console.log muestra en la consola del servidor
         console.error("Error al obtener productos", error);
-
-        // Esta es la respuesta que le devolvemos al cliente, para verla como JSON
         res.status(500).json({
             message: "Error interno al obtener productos"
         });
@@ -39,23 +33,9 @@ export const getProductById = async (req, res) => {
         // el :id se extrae con el objeto request -> req.params.id
         let { id } = req.params; // Esto nos permite obtener el valor numerico despues de products //2
 
-        /* Pasamos a definir el middleware validateId
-        // Optimizacion 1: Validacion de parametros antes de acceder a la BBDD para evitar hacer una query si el id no es valido
-        // Esta logica luego la hara un middleware validateId -> para EVITAR tener que repetir este codigo 
-        if(!id || isNaN(Number(id))) {
-            return res.status(400).json({
-                message: "El id del producto debe ser un numero valido"
-            });
-        }
-        */
-        /* Si enviara este valor con post, lo recogeria asi:
-        let { id } = req.body;
-        */
 
         const [rows] = await ProductModels.selectProductWhereId(id);
 
-
-        // Hacemos la consulta, y tenemos el resultado en la variable rows
         // Optimizacion 2: Comprobamos que existe el producto con ese id
         if(rows.length === 0) {
             console.log("Error, no existe producto con ese id");
@@ -122,14 +102,6 @@ export const createProduct = async (req, res) => {
 // Modificar un producto
 export const modifyProduct = async (req, res) => {
     try {
-        /*
-        "id": 4,
-        "name": "hamburguesa pollo a la parrilla",
-        "image": "https://burgernj.com/wp-content/uploads/2021/05/Grilled-Chicken-Burger_.jpg",
-        "category": "food",
-        "price": "1500.00",
-        "active": 1
-      */
         let { id, name, image, category, price, active } = req.body;
 
         // Optimizacion 1: Validacion basica de datos
@@ -177,9 +149,6 @@ export const removeProduct = async (req, res) => {
         console.log(result);
         // affectedRows: 1 -> Nos indica que hubo una fila que fue afectada
 
-        // Optimizacion 1 -> Ya hacemos la validacion del Id a traves del middleware
-
-        // Optimizacion 2 -> Comprobar si realmente eliminamos un producto
         if(result.affectedRows === 0) { // Quiere decir que no afectamos ninguna fila
             return res.status(404).json({
                 message: `No se encontro un producto con id ${id}`
