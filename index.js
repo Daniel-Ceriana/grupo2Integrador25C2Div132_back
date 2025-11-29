@@ -1,14 +1,14 @@
 /*======================
     Importaciones
 ======================*/
-import express from "express"; // Importamos el framework Express
-const app = express(); // Inicializamos express en la variable app, que contendra todos los metodos
+import express from "express"; 
+const app = express(); 
 
-import environments from "./src/api/config/environments.js"; // Importamos las variables de entorno
+import environments from "./src/api/config/environments.js";
 const PORT = environments.port;
 const session_key = environments.session_key;
 
-import cors from "cors"; // Importamos el modulo CORS
+import cors from "cors"; 
 
 // Importamos los middlewares
 import { loggerUrl } from "./src/api/middlewares/middlewares.js"; 
@@ -28,7 +28,7 @@ import bcrypt from "bcrypt";
 /*===================
     Middlewares
 ====================*/
-app.use(cors()); // Middleware CORS basico que permite todas las solicitudes
+app.use(cors());
 
 // Middleware para parsear las solicitudes POST y PUT que envian JSON en el body
 app.use(express.json());
@@ -39,53 +39,40 @@ app.use(express.urlencoded({ extended: true }));
 app.use(loggerUrl); // Aplicamos el middleware loggerUrl
 
 // Middleware para servir archivos estaticos (img, css, js)
-app.use(express.static(join(__dirname, "src/public"))); // Nuestros archivos estaticos se serviran desde la carpeta public
+app.use(express.static(join(__dirname, "src/public"))); 
 
 
 
 /*================
     Config
 ================*/
-// Configuramos EJS como motor de plantillas
+//Configuramos ejs
 app.set("view engine", "ejs");
-app.set("views", join(__dirname, "src/views")); // Nuestras vistas se serviran desde la carpeta public
+app.set("views", join(__dirname, "src/views"));
 
 // Middleware de sesion 
 app.use(session({
-    secret: session_key, // Esto firma las cookies para evitar manipulacion
-    resave: false, // Esto evita guardar la sesion si no hubo cambios
-    saveUninitialized: true // No guarde sesiones vacias
+    secret: session_key,
+    resave: false,
+    saveUninitialized: true
 }));
 
 
-/* TO DO: 
-    1. Crear la vista del login con un <form> que manda los datos a un
-    2. Endpoint /login que recibe estos datos y redireciona
-    3. Integrar las redirecciones en view.routes.js
-    4. Añadiremos el boton en el <nav> para poder hacer una solicitud al
-    5. Endpoint /logout para salir del login
-
-*/
 
 /*======================
     Rutas
 ======================*/
-// Rutas producto
 app.use("/api/products", productRoutes);
 
-// Rutas vista
 app.use("/", viewRoutes);
 
-// Rutas usuario
 app.use("/api/users", userRoutes);
 
-// TO DO, modularizar
 // Creamos el endpoint que recibe los datos que enviamos del <form> del login.ejs
 app.post("/login", async (req, res) => {
     try {
         const { email, password } = req.body; // Recibimos el email y el password
 
-        // Optimizacion 1: Evitamos consulta innecesaria y le pasamos un mensaje de error a la vista
         if(!email || !password) {
             return res.render("login", {
                 title: "login",
@@ -94,11 +81,7 @@ app.post("/login", async (req, res) => {
         }
 
 
-        // Sentencia antes de bcrypt
-        // const sql = `SELECT * FROM users where email = ? AND password = ?`;
-        // const [rows] = await connection.query(sql, [email, password]);
 
-        // Bcrypt I -> Sentencia con bcrypt, traemos solo el email
         const sql = "SELECT * FROM users where email = ?";
         const [rows] = await connection.query(sql, [email]);
 
@@ -111,12 +94,12 @@ app.post("/login", async (req, res) => {
             });
         }
 
-        console.log(rows); // [ { id: 7, name: 'test', email: 'test@test.com', password: 'test' } ]
-        const user = rows[0]; // Guardamos el usuario en la variable user
+        console.log(rows);
+        const user = rows[0];
         console.table(user);
 
-        // Bcrypt II -> Comparamos el password hasheado (la contraseña del login hasheada es igual a la de la BBDD?)
-        const match = await bcrypt.compare(password, user.password); // Si ambos hashes coinciden, es porque coinciden las contraseñas y match devuelve true
+        // Comparamos el password hasheado 
+        const match = await bcrypt.compare(password, user.password);
 
         console.log(match);
 
