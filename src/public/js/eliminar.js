@@ -1,74 +1,55 @@
-let getProducts_form = document.getElementById("getProducts-form");
-let listado_productos = document.getElementById("listado-productos");
+// Seleccion de elementos del DOM
+let listaProductos = document.getElementById("lista-productos");
+let getProductForm = document.getElementById("getProduct-form");
+let url = "http://localhost:3000";
 
 
-getProducts_form.addEventListener("submit", async (event) => {
+getProductForm.addEventListener("submit", async (event) => {
     
     event.preventDefault(); // Prevenimos el envio por defecto del formulario
 
-    // event.target -> trae todo el formulario HTML al que se le asigno el evento
-    //console.log(event.target)
+    // Tenemos que obtener los datos del formulario, por tanto, vamos a crear un objeto FormData a partir de los datos del formulario
+    let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
 
-    // Primer paso: Extraer toda la informacion del formulario en un objeto FormData (en event.target -> le pasamos todo el formulario a FormData)
-    let formData = new FormData(event.target); // FormData { id → "2" }
-    console.log(formData);
+    console.log(formData); // FormData { idProd → "2" }
 
-    // Segundo paso: Convertimos el objeto FormData en un objeto normal JS para poder extraer la informacion comodamente
-    let data = Object.fromEntries(formData.entries()); // Object { id: "2" }
-    console.log(data);
+    // Transformamos a objetos JS los valores de FormData
+    let data = Object.fromEntries(formData.entries());
+    console.log(data); // { idProd: '2' }
 
-    let idProducto = data.id;
-    console.log(idProducto); // Ya extrajimos el valor del campo
+    let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
+    console.log(idProd);
 
-    try {
-        // Hago el fetch a la url personalizada
-        let response = await fetch(`http://localhost:3000/api/products/${idProducto}`);
-        console.log(response);
+    console.log(`Realizando una peticion GET a la url ${url}/api/products/${idProd}`);
+    
+    // Enviamos en una peticion GET el id pegado a la url
+    let response = await fetch(`${url}/api/products/${idProd}`);
 
-        // Proceso los datos que me devuelve el servidor
-        let datos = await response.json();
-        console.log(datos);
+    let datos = await response.json();
 
-        // Extraigo el producto que devuelve payload
-        let producto = datos.payload[0]; // Apuntamos a la respuesta, vamos a payload que trae el array con el objeto y extraemos el primer y unico elemento
-
-        // Le pasamos el producto a una funcion que lo renderice en la pantalla
-        mostrarProducto(producto); 
-
-    } catch (error) {
-        console.error("Error: ", error);
-    }
-
-    /* Que es FormData?
-
-    En JavaScript, FormData es un objeto que permite crear un conjunto de pares clave-valor que representan los campos de un formulario HTML y sus valores, facilitando su envío a un servidor mediante métodos como fetch o XMLHttpRequest.
-    Este objeto replica la funcionalidad de un formulario HTML y se utiliza comúnmente para enviar datos de formularios, incluyendo archivos, de manera dinámica sin recargar la página
-
-    Este objeto es especialmente útil en aplicaciones modernas que requieren enviar datos de forma asincrónica, ya que simplifica el manejo de formularios, incluyendo campos de texto, casillas de verificación, botones de radio y campos de carga de archivos*/
-});
-
-function mostrarProducto(producto) {
-    console.table(producto); // El producto se recibe correctamente
+     // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
+    let producto = datos.payload[0];
+    console.log(producto);
 
     let htmlProducto = `
-        <li class="li-listados">
-            <img src="${producto.image}" alt="${producto.name}" class="img-listados">
-            <p>Id: ${producto.id}/ Nombre: ${producto.name}/ <strong>Precio: $${producto.price}</strong></p>
+        <li class="li-producto">
+                <img class="producto-img" src="${producto.image}" alt="${producto.name}">
+                <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
         </li>
         <li class="li-botonera">
             <input type="button" id="deleteProduct_button" value="Eliminar producto">
         </li>
-        `;
+    `;
 
-    listado_productos.innerHTML = htmlProducto;
+    listaProductos.innerHTML = htmlProducto;
 
     let deleteProduct_button = document.getElementById("deleteProduct_button");
 
     deleteProduct_button.addEventListener("click", event => {
+        
+        event.stopPropagation(); // Evitamos la propagacion de eventos
 
-        event.stopPropagation(); // Evitar la propagacion de eventos
-
-        let confirmacion = confirm("Querés eliminar este producto?");
+        let confirmacion = confirm("Queres eliminar este producto?");
 
         if(!confirmacion) {
             alert("Eliminacion cancelada");
@@ -76,35 +57,31 @@ function mostrarProducto(producto) {
         } else {
             eliminarProducto(producto.id);
         }
-    });
-}
+    })
+});
 
-// Funcion para eliminar un producto
 async function eliminarProducto(id) {
-    let url = "http://localhost:3000/api/products";
-    try {
+    console.log(id); // Confirmo que recibo el id correctamente
 
-        console.log(`Haciendo peticion DELETE a ${url}/${id}`);
-        let response = await fetch(`${url}/${id}`, {
+    try {
+        let response = await fetch(`${url}/api/products/${id}`, {
             method: "DELETE"
         });
 
-        console.log(response);
-
-        let result = await response.json(); // Procesamos la respuesta json que devolvemos del servidor
+        let result = await response.json();
 
         if(response.ok) {
             alert(result.message);
-            console.log(result.message);
 
-            listado_productos.innerHTML = "";
+            // Sacamos el producto listado de la pantalla
+            listaProductos.innerHTML = "";
 
         } else {
-            alert("No se pudo eliminar un producto");
-            console.error(result.message);
+            console.error("Error: ", result.message);
+            alert("No se pudo eliminar el producto");
         }
 
-    } catch(error) {
+    } catch (error) { // El catch este, solo atrapa errores de red
         console.error("Error en la solicitud DELETE: ", error);
         alert("Ocurrio un error al eliminar un producto");
     }

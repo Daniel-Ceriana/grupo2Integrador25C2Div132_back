@@ -1,135 +1,113 @@
-let getProducts_form = document.getElementById("getProducts-form");
-let listado_productos = document.getElementById("listado-productos");
-let contenedor_formulario = document.getElementById("contenedor-formulario");
+// Seleccion de elementos del DOM
+let listaProductos = document.getElementById("lista-productos");
+let getProductForm = document.getElementById("getProduct-form");
+let url = "http://localhost:3000";
+let updateFormContainer = document.getElementById("updateFormContainer");
 
 
-getProducts_form.addEventListener("submit", async (event) => {
+getProductForm.addEventListener("submit", async (event) => {
     
     event.preventDefault(); // Prevenimos el envio por defecto del formulario
 
-    // event.target -> trae todo el formulario HTML al que se le asigno el evento
-    //console.log(event.target)
+    // Tenemos que obtener los datos del formulario, por tanto, vamos a crear un objeto FormData a partir de los datos del formulario
+    let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
 
-    // Primer paso: Extraer toda la informacion del formulario en un objeto FormData (en event.target -> le pasamos todo el formulario a FormData)
-    let formData = new FormData(event.target); // FormData { id → "2" }
-    console.log(formData);
+    console.log(formData); // FormData { idProd → "2" }
 
-    // Segundo paso: Convertimos el objeto FormData en un objeto normal JS para poder extraer la informacion comodamente
-    let data = Object.fromEntries(formData.entries()); // Object { id: "2" }
-    console.log(data);
+    // Transformamos a objetos JS los valores de FormData
+    let data = Object.fromEntries(formData.entries());
+    console.log(data); // Object { idProd: '2' }
 
-    let idProducto = data.id;
-    console.log(idProducto); // Ya extrajimos el valor del campo
+    let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
+    console.log(idProd);
 
-    try {
-        // Hago el fetch a la url personalizada
-        let response = await fetch(`http://localhost:3000/api/products/${idProducto}`);
-        console.log(response);
+    console.log(`Realizando una peticion GET a la url ${url}/api/products/${idProd}`);
+    
+    // Enviamos en una peticion GET el id pegado a la url
+    let response = await fetch(`${url}/api/products/${idProd}`);
 
-        // Proceso los datos que me devuelve el servidor
-        let datos = await response.json();
-        console.log(datos);
+    let datos = await response.json();
+    console.log(datos);
 
-        // Extraigo el producto que devuelve payload
-        let producto = datos.payload[0]; // Apuntamos a la respuesta, vamos a payload que trae el array con el objeto y extraemos el primer y unico elemento
-
-        // Le pasamos el producto a una funcion que lo renderice en la pantalla
-        mostrarProducto(producto); 
-
-    } catch (error) {
-        console.error("Error: ", error);
-    }
-
-    /* Que es FormData?
-
-    En JavaScript, FormData es un objeto que permite crear un conjunto de pares clave-valor que representan los campos de un formulario HTML y sus valores, facilitando su envío a un servidor mediante métodos como fetch o XMLHttpRequest.
-    Este objeto replica la funcionalidad de un formulario HTML y se utiliza comúnmente para enviar datos de formularios, incluyendo archivos, de manera dinámica sin recargar la página
-
-    Este objeto es especialmente útil en aplicaciones modernas que requieren enviar datos de forma asincrónica, ya que simplifica el manejo de formularios, incluyendo campos de texto, casillas de verificación, botones de radio y campos de carga de archivos*/
-});
-
-function mostrarProducto(producto) {
-    // console.table(producto); // El producto se recibe correctamente
+     // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
+    let producto = datos.payload[0]; // Accedo al objeto que se encuentra en la posicion 0 de payload
+    console.log(producto);
 
     let htmlProducto = `
-        <li class="li-listados">
-            <img src="${producto.image}" alt="${producto.name}" class="img-listados">
-            <p>Id: ${producto.id}/ Nombre: ${producto.name}/ <strong>Precio: $${producto.price}</strong></p>
+        <li class="li-producto">
+                <img class="producto-img" src="${producto.image}" alt="${producto.name}">
+                <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
         </li>
         <li class="li-botonera">
             <input type="button" id="updateProduct_button" value="Actualizar producto">
         </li>
-        `;
+    `;
 
-    listado_productos.innerHTML = htmlProducto;
+    listaProductos.innerHTML = htmlProducto;
 
     let updateProduct_button = document.getElementById("updateProduct_button");
 
     updateProduct_button.addEventListener("click", event => {
-        crearFormularioPut(event, producto);
-    });
-}
+        
+        event.stopPropagation(); // Evitamos la propagacion de eventos
+
+        crearFormulario(producto);
+    })
+});
 
 
-function crearFormularioPut(event, producto) {
+async function crearFormulario(producto) {
+    console.table(producto);
 
-    event.stopPropagation(); // Evitamos la propagacion de eventos
-    console.table(producto); // Recibimos el producto para llenar los valores del formulario
+    let updateFormHTML = `
+        <form id="updateProducts_form">
 
-    let formularioPutHtml = `
-        <form id="updateProducts-form" class="products-form-amplio">
-
-            <input type="hidden" name="id" value="${producto.id}">
+            <input type="hidden" name="id" id="idProd" value="${producto.id}">
 
             <label for="nameProd">Nombre</label>
             <input type="text" name="name" id="nameProd" value="${producto.name}" required>
-            <br>
 
             <label for="imageProd">Imagen</label>
             <input type="text" name="image" id="imageProd" value="${producto.image}" required>
-            <br>
+
+            <label for="priceProd">Precio</label>
+            <input type="number" name="price" id="priceProd" value="${producto.price}" required>
 
             <label for="categoryProd">Categoria</label>
             <select name="category" id="categoryProd" required>
                 <option value="food">comida</option>
                 <option value="drink">bebida</option>
             </select>
-            <br>
 
-            <label for="priceProd">Precio</label>
-            <input type="number" name="price" id="priceProd" value="${producto.price}" required>
-            <br>
-
-            <input type="hidden" name="active" value="${producto.active}">
+            <input type="hidden" name="active" id="activeProd" value="${producto.active}">
 
             <input type="submit" value="Actualizar producto">
         </form>
     `;
 
-    contenedor_formulario.innerHTML = formularioPutHtml;
+    updateFormContainer.innerHTML = updateFormHTML;
 
-    let updateProducts_form = document.getElementById("updateProducts-form");
+    let updateProducts_form = document.getElementById("updateProducts_form");
 
     updateProducts_form.addEventListener("submit", event => {
-        actualizarProducto(event)
+        actualizarProducto(event);
     });
 }
 
 
 async function actualizarProducto(event) {
     event.preventDefault();
+    event.stopPropagation();
 
-    let url = "http://localhost:3000/api/products";
-    // console.log(event.target); // event.target se refiere al formulario que activo el evento
-    
-    let formData = new FormData(event.target); // Guardamos los datos en un objeto FormData
-    console.log(formData);
+    console.log("Preparando datos del formulario para el PUT");
 
-    let data = Object.fromEntries(formData.entries()); // Transformamos el objeto FormData en un objeto JS
-    console.log(data);
+    let formData = new FormData(event.target); // Le pasamos el formulario dinamico de antes al objeto FormData para obtener los datos del nuevo formulario de actualizacion
+
+    let data = Object.fromEntries(formData.entries());
+    console.log(data); // Ya tenemos como objetos JS los datos de nuestro formulario anterior con las nuevas modificaciones
 
     try {
-        let response = await fetch(url, {
+        let response = await fetch(`${url}/api/products`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
@@ -137,28 +115,20 @@ async function actualizarProducto(event) {
             body: JSON.stringify(data)
         });
 
-        console.log(response);
+        let result = await response.json();
+        console.log(result);
 
-        let result = await response.json(); 
-
-        // Si la response que hacemos, devuelve OK, quiere decir que la peticion fue exitosa y pasaremos a hacer lo siguiente
-        if(response.ok) { 
+        if(response.ok) {
             console.log(result.message);
             alert(result.message);
-
-            // Vaciamos el formulario y el listado
-            listado_productos.innerHTML = "";
-            contenedor_formulario.innerHTML = "";
-
         } else {
-            console.error("Error: ", error.message);
-            alert(error.message);
+            // TO DO
+            console.log(result.message);
+            alert(result.message);
         }
 
     } catch (error) {
-        console.error("Error al enviar los datos: ", error);
-        alert("Error al procesar la solicitud");
+
     }
-
-
+    
 }

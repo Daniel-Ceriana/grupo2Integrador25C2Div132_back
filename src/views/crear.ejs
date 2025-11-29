@@ -1,36 +1,51 @@
 <%- include("partials/head.ejs") %>
 <%- include("partials/nav.ejs") %>
 
-<main>
-    <h1> <%= about %> </h1>
+<main id="alta-container">
+    
+    <div id="products-container" class="form-container">
+        <h3>Alta productos</h3>
 
-    <!-- A menos que enviemos este formulario con el envio nativo del formulario HTML, no necesitamos poner ni action ni method -->
-    <form id="altaProducts-form" class="products-form-amplio">
+        <!-- Formulario para crear productos y enviarlos a /api/products -->
+        <form id="altaProducts-container" class="form-alta">
+    
+            <label for="nameProd">Nombre</label>
+            <input type="text" name="name" id="nameProd" required>
+    
+            <label for="imageProd">Imagen</label>
+            <input type="text" name="image" id="imageProd" required>
+    
+            <label for="priceProd">Precio</label>
+            <input type="number" name="price" id="priceProd" required>
+    
+            <label for="categoryProd">Categoria</label>
+            <select name="category" id="categoryProd" required>
+                <option value="food">comida</option>
+                <option value="drink">bebida</option>
+            </select>
+    
+            <input type="submit" value="Crear producto">
+        </form>
+    </div>
 
-        <label for="nameProd">Nombre</label>
-        <input type="text" name="name" id="nameProd" required>
-        <br>
+    <div id="users-container" class="form-container">
+        <h3>Alta usuarios</h3>
 
-        <label for="imageProd">Imagen</label>
-        <input type="text" name="image" id="imageProd" required>
-        <br>
+        <!-- Formulario para crear usuarios y enviarlos a /api/users -->
+        <form id="altaUsers-container" class="form-alta">
+            <label for="nombreUser">Nombre</label>
+            <input type="text" name="name" id="nombreUser" required>
+    
+            <label for="emailUser">Email</label>
+            <input type="email" name="email" id="emailUser" required>
+    
+            <label for="passwordUser">Password</label>
+            <input type="password" name="password" id="passwordUser" required>
+    
+            <input type="submit" value="Crear usuario">
+        </form>
+    </div>
 
-        <label for="categoryProd">Categoria</label>
-        <select name="category" id="categoryProd" required>
-            <option value="food">comida</option>
-            <option value="drink">bebida</option>
-        </select>
-        <br>
-
-        <label for="priceProd">Precio</label>
-        <input type="number" name="price" id="priceProd" required>
-        <br>
-
-        <input type="submit" value="Crear producto">
-    </form>
-
-    <hr>
-    <div id="contenedor-productos"></div>
 </main>
 
 <script src="js/crear.js"></script>

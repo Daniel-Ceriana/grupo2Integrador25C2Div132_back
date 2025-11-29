@@ -1,71 +1,83 @@
-/*================================
-    Modelos de producto
-================================*/
+/*===========================
+    Modelos producto
+===========================*/
+import connection from "../database/db.js"; // Importamos la conexion a la BBDD
 
-import connection from "../database/db.js"; // Traemos la conexion a la BBDD
 
-
-// Traer todos los productos
+// Seleccionar todos los productos
 const selectAllProducts = () => {
+        /* Ejemplo de consulta trayendo TODA la informacion de la BBDD
 
-    /* Optimizacion 1: 
-    - Seleccionemos solamente los campos necesarios, evitar SELECT *
-    - Devolver solo las columnas que necesita el front
-    - < datos transferidos, < carga de red, > seguridad*/
-    const sql = "SELECT * FROM products";
+        const sql = `SELECT * FROM products`;
+        const respuesta = await connection.query(sql);
+        
+        console.log(respuesta); // Aca trae no solo los resultados de la consulta sino tb mas info como metadatos
 
-    // la conexion devuelve dos campos, rows con el resultado de la consulta, fields la informacion de la tabla products
-    return connection.query(sql);
+        respuesta, ademas de los resultados de la consulta en forma de array de objetos, nos devuelve tambien el tipo de datos que trae
+          [
+            `id` INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            `name` VARCHAR(100) NOT NULL,
+            `image` VARCHAR(255) NOT NULL,
+            `category` STRING(20) NOT NULL ENUM,
+            `price` DECIMAL(10,2) NOT NULL,
+            `active` TINYINT(1) NOT NULL
+        ]*/
+
+        // Optimizacion 1: Seleccionar solamente los campos necesarios -> name, image, category, price porque es la unica informacion que necesita ver el cliente
+        const sql = `SELECT * FROM products`;
+        return connection.query(sql); // Retorna una promesa que se resuelve en el controlador
 }
 
 
-// Traer producto por id
-const selectProductById = (id) => {
-
-    // Optimizacion 2: Limitar los resultados de la consulta: Evita el escaneo completo de la tabla
-    //let sql = "SELECT * FROM products WHERE products.id = ? LIMIT 1";
-    let sql = "SELECT * FROM products WHERE products.id = ?"; // ? son placeholders
-
-    return connection.query(sql, [id]);
+// Seleccionar producto por id
+const selectProductWhereId = (id) => {
+      // Los ? representan los placeholders, se usan por temas de seguridad para prevenir inyecciones SQL
+      let sql = `SELECT * FROM products where id = ?`;
+      return connection.query(sql, [id]); // El id reemplaza nuestro ?
 }
 
 
-
-// Crear nuevo producto
+// Crear producto
 const insertProduct = (name, image, category, price) => {
-    let sql = "INSERT INTO products (name, image, category, price) VALUES (?, ?, ?, ?)";
+     // Los placeholders ?, evitan inyecciones SQL para evitar ataques de este tipo
+     let sql = "INSERT INTO products (name, image, category, price) VALUES (?, ?, ?, ?)";
 
-    return connection.query(sql, [name, image, category, price]);
+     // Le enviamos estos valores a la BBDD
+     return connection.query(sql, [name, image, category, price]);
 }
 
 
-// Modificar producto
-const updateProduct = (name, image, category, price, active, id) => {
+
+// Actualizar producto
+const updateProduct = (name, image, price, category, id) => {
+
     let sql = `
         UPDATE products
-        SET name = ?, image = ?, category = ?, price = ?, active = ?
+        SET name = ?, image = ?, price = ?, category = ?
         WHERE id = ?
     `;
 
-    return connection.query(sql, [name, image, category, price, active, id]); // Estos valores en orden reemplazan a los placeholders -> ?
+    return connection.query(sql, [name, image, price, category, id]);
 }
 
 
 // Eliminar producto
 const deleteProduct = (id) => {
-     // Opcion 1: Hacer el borrado normal
-     let sql = `DELETE FROM products WHERE id = ?`;
+      // Opcion 1: Borrado normal
+      let sql = "DELETE FROM products WHERE id = ?";
 
-     // Opcion 2: Baja logica
-     let sql2 = `UPDATE products set active = 0 WHERE id = ?`;
+      // Opcion 2: Baja logica
+      // let sql2 = "UPDATE products set active = 0 WHERE id = ?";
 
-     return connection.query(sql, [id]);
+      return connection.query(sql, [id]);
 }
+
+
 
 
 export default {
     selectAllProducts,
-    selectProductById,
+    selectProductWhereId,
     insertProduct,
     updateProduct,
     deleteProduct

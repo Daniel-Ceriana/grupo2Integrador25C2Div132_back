@@ -1,74 +1,93 @@
-let altaProducts_form = document.getElementById("altaProducts-form");
-let url = "http://localhost:3000/api/products";
+let altaProducts_container = document.getElementById("altaProducts-container");
+let altaUsers_container = document.getElementById("altaUsers-container");
+let url = "http://localhost:3000";
 
-altaProducts_form.addEventListener("submit", event => {
 
-    event.preventDefault(); // Evitamos el envio por defecto del formulario
+// Alta Usuarios
+altaUsers_container.addEventListener("submit", async event => {
+    event.preventDefault();
 
-    let formData = new FormData(event.target); // Obtenemos la data del formulario en un FormData
-    console.log(formData);
-    /*FormData(4) { 
-        name → "Manaos Pomelo", 
-        image → "https://live.staticflickr.com/65535/52470400378_52f5664294_m.jpg", 
-        category → "drink", 
-        price → "800" 
-    }*/
+    let formData = new FormData(event.target); // Transformamos en objeto FormData los campos del formulario
 
-    let data = Object.fromEntries(formData.entries()); // Parseamos esta data del form data en un objeto JS
+    let data = Object.fromEntries(formData.entries()); // Transformaos a objeto JS el objeto FormData
+
     console.log(data);
-    /*Object { 
-        name: "Manaos Pomelo", 
-        image: "https://live.staticflickr.com/65535/52470400378_52f5664294_m.jpg", 
-        category: "drink", 
-        price: "800" 
-    }
-    */
 
-    // Los datos se enviaran asi, como JSON, parseando nuestros valores de objeto JS
-    console.log(JSON.stringify(data));
-    /*{
-        "name":"Manaos Pomelo",
-        "image":"https://live.staticflickr.com/65535/52470400378_52f5664294_m.jpg",
-        "category":"drink",
-        "price":"800"
-       }*/
-
-    // Le enviamos el objeto del formulario a una funcion que se encargara de hacer la peticion fetch
-    enviarProducto(data);
-});
-
-
-async function enviarProducto(data) {
-    console.table(data); // Recibimos correctamente los datos del formulario
-
+    // Vamos a enviar los datos de nuestro usuario al endpoint /api/users
     try {
-        // let url = "http://localhost:3000/api/products"
-        let response = await fetch(url, {
+        let response = await fetch(`${url}/api/users`, {
             method: "POST",
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data)
         });
 
-        console.log(response);
-
-        // Procesamos la respuesta que nos devuelve
-        let result = await response.json();
-        console.log(result);
-
-        // Vamos a verificar si la conexion fue exitosa con un "200" OK o "201" Created
         if(response.ok) {
-            console.log(result.message);
-            alert(result.message);
+            console.log(response);
 
-        } else { // En caso de que haya otra respuesta distinta de ok
-            console.error(result.message);
-            alert(result.message);
+            let result = await response.json();
+            console.log(result);
+            alert(result.message)
         }
 
-    } catch (error) {
+    } catch(error) { // El catch solo captura errores de red
         console.error("Error al enviar los datos: ", error);
         alert("Error al procesar la solicitud");
     }
-}
+});
+
+
+// Alta Productos
+altaProducts_container.addEventListener("submit", async (event) => {
+
+    event.preventDefault(); // Evitamos el envio por defecto del formulario
+
+    console.log(event.target);
+    //event.target devuelve el formulario HTML que activo el evento
+
+    // Guardamos toda la informacion de nuestro formulario en el objeto nativo FormData
+    let formData = new FormData(event.target);
+
+    // Esto no deberia consologuearse en producccion 
+    console.log(formData); // Esto no se ve en navegadores basados en Chromium
+
+    // Transformamos la informacion del objeto FormData en un objeto JavaScript normal
+    let data = Object.fromEntries(formData.entries()); // Nuestro objeto ya esta listo para enviarse previo parseo a JSON
+
+    /* Ahora ya le podemos meter en el cuerpo de la peticion HTTP Post, este objeto con los datos del formulario en JSON
+    {
+        "name":"faina",
+        "image":"https://www.lanacion.com.ar/resizer/v2/fain-G5ZYOIATCNALHJPHQVNTPXRDOM.jpg",
+        "price":"150",
+        "category":"food"
+    }
+    */
+    try {
+        // En peticiones distintas a GET, tenemos que especificar mas informacion en un parametro de opciones
+        let response = await fetch(`${url}/api/products`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data)
+        });
+
+        // Recordemos que el catch en este try solo captura errores de red
+        if(response.ok) {
+            console.log(response);
+
+            let result = await response.json();
+            console.log(result);
+            alert(result.message)
+        }
+
+
+
+    } catch(error) { // El catch solo captura errores de red
+        console.error("Error al enviar los datos: ", error);
+        alert("Error al procesar la solicitud");
+    }
+    
+});
+

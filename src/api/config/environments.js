@@ -1,11 +1,10 @@
-import dotenv from "dotenv";
+import dotenv from "dotenv"; // Importamos el modulo dotenv
 
-// Cargamos las variables de entorno desde nuestro archivo .env
-dotenv.config();
+dotenv.config(); // Cargamos las variables de entorno desde el archivo.env
 
-// Esta informacion esta lista para ser exportada a otros modulos
+// Vamos a exportar esta informacion del .env
 export default {
-    port: process.env.PORT,
+    port: process.env.PORT || 3500,
     database: {
         host: process.env.DB_HOST,
         name: process.env.DB_NAME,

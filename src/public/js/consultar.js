@@ -1,84 +1,66 @@
-let getProducts_form = document.getElementById("getProducts-form");
-let listado_productos = document.getElementById("listado-productos");
-let url = "http://localhost:3000/api/products";
+// Seleccion de elementos del DOM
+// let contenedorProductos = document.getElementById("contenedor-productos");
+let listaProductos = document.getElementById("lista-productos");
+let getProductForm = document.getElementById("getProduct-form");
+let url = "http://localhost:3000";
 
 
-getProducts_form.addEventListener("submit", async (event) => {
+getProductForm.addEventListener("submit", async (event) => {
     
     event.preventDefault(); // Prevenimos el envio por defecto del formulario
 
-    // Optimizacion, validar con un REGEX y limpiar informacion
+    // Tenemos que obtener los datos del formulario, por tanto, vamos a crear un objeto FormData a partir de los datos del formulario
+    let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
+
+    console.log(formData); // FormData { idProd → "2" }
+    // Ojo, esto no se muestra en navegadores basados en Chromium
+
+    // Transformamos a objetos JS los valores de FormData
+    let data = Object.fromEntries(formData.entries());
+    console.log(data); // { idProd: '2' }
+
+    let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
+    console.log(idProd);
+
+    console.log(`Realizando una peticion GET a la url ${url}/api/products/${idProd}`);
     
-    // event.target -> trae todo el formulario HTML al que se le asigno el evento
-    //console.log(event.target)
+    // Enviamos en una peticion GET el id pegado a la url
+    let response = await fetch(`${url}/api/products/${idProd}`);
 
-    // Primer paso: Extraer toda la informacion del formulario en un objeto FormData (en event.target -> le pasamos todo el formulario a FormData)
-    let formData = new FormData(event.target); // FormData { id → "2" }
-    console.log(formData);
+    let datos = await response.json();
 
-    // Segundo paso: Convertimos el objeto FormData en un objeto normal JS para poder extraer la informacion comodamente
-    let data = Object.fromEntries(formData.entries()); // Object { id: "2" }
-    console.log(data);
+    if(response.ok) {
+        // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
+        let producto = datos.payload[0];
+        console.log(producto);
 
-    let idProducto = data.id;
-    console.log(idProducto); // Ya extrajimos el valor del campo
-
-    try {
-
-        console.log(`Realizamos una peticion GET a ${url}/${idProducto}`);
-        
-        // Hago el fetch a la url personalizada
-        let response = await fetch(`http://localhost:3000/api/products/${idProducto}`);
-        console.log(response);
-
-        // Proceso los datos que me devuelve el servidor
-        let result = await response.json();
-        console.log(result);
-
-        if(response.ok) {
-            // Extraigo el producto que devuelve payload
-            let producto = result.payload[0]; // Apuntamos a la respuesta, vamos a payload que trae el array con el objeto y extraemos el primer y unico elemento
-
-            // Le pasamos el producto a una funcion que lo renderice en la pantalla
-            mostrarProducto(producto); 
-
-        } else {
-            // alert(result.message);
-            console.error(result.message)
-
-            // Llamamos a la funcion que imprime un mensaje de error
-            mostrarError(result.message);
-        }
+        mostrarProducto(producto);
 
 
-    } catch (error) {
-        console.error("Error: ", error);
+    } else {
+        console.log(datos);
+        console.log(datos.message);
+
+        mostrarError(datos.message);
     }
 
-    /* Que es FormData?
 
-    En JavaScript, FormData es un objeto que permite crear un conjunto de pares clave-valor que representan los campos de un formulario HTML y sus valores, facilitando su envío a un servidor mediante métodos como fetch o XMLHttpRequest.
-    Este objeto replica la funcionalidad de un formulario HTML y se utiliza comúnmente para enviar datos de formularios, incluyendo archivos, de manera dinámica sin recargar la página
-
-    Este objeto es especialmente útil en aplicaciones modernas que requieren enviar datos de forma asincrónica, ya que simplifica el manejo de formularios, incluyendo campos de texto, casillas de verificación, botones de radio y campos de carga de archivos*/
 });
 
 function mostrarProducto(producto) {
-    console.table(producto); // El producto se recibe correctamente
-
     let htmlProducto = `
-        <li class="li-listados">
-            <img src="${producto.image}" alt="${producto.name}" class="img-listados">
-            <p>Id: ${producto.id}/ Nombre: ${producto.name}/ <strong>Precio: $${producto.price}</strong></p>
-        </li>
+            <li class="li-producto">
+                    <img class="producto-img" src="${producto.image}" alt="${producto.name}">
+                    <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
+            </li>
         `;
 
-    listado_productos.innerHTML = htmlProducto;
+    listaProductos.innerHTML = htmlProducto;
 }
 
 
 function mostrarError(message) {
-    listado_productos.innerHTML = `
+    listaProductos.innerHTML = `
         <li class="mensaje-error">
             <p>
                 <strong>Error:</strong>
@@ -87,3 +69,17 @@ function mostrarError(message) {
         </li>
     `;
 }
+
+
+/*==========================
+        Que es FormData?
+============================
+
+FormData es una interfaz nativa de JavaScript que permite crear un conjunto de pares clave-valor 
+que representan los campos de un formulario HTML y sus respectivos valores.
+
+Esta clase se utiliza principalmente para capturar y enviar datos de formularios, 
+ya sea mediante métodos como fetch o XMLHttpRequest, 
+y se encarga de formatear los datos correctamente como multipart/form-data, 
+estableciendo automáticamente los encabezados necesarios para el envío
+*/

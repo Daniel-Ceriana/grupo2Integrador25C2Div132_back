@@ -1,30 +1,28 @@
-/*================================
-    Controladores de producto
-================================*/
+/*===============================
+    Controladores producto
+===============================*/
 
-// Traemos el modelo de productos con un nombre
-import ProductModel from "../models/product.models.js"; 
+import ProductModels from "../models/product.models.js"
 
-// GET all products -> Traer todos los productos
-export const getAllProducts = async (req, res) => {
+//////////////////
+// Get products -> Traer todos los productos
+// Similiar al addEventListener, porque se ejecuta constantemente esperando una accion para ejecutar una fucion -> elemento.addEventListener("click", () => {})
+export const getAllProducts = async (req, res) => { 
     try {
-        // la conexion devuelve dos campos, rows con el resultado de la consulta, fields la informacion de la tabla products
-        const [rows, fields] = await ProductModel.selectAllProducts();
 
-        // Tipo de respuesta en JSON
+        const [rows] = await ProductModels.selectAllProducts();
+        
         res.status(200).json({
             payload: rows,
             message: rows.length === 0 ? "No se encontraron productos" : "Productos encontrados"
         });
-        // Optimizacion 2: Devolver un mensaje haya o no haya productos
 
-        /* El término "payload" en el contexto de bases de datos se refiere 
-        a la parte de los datos transmitidos que constituye el mensaje real 
-        o la información útil, excluyendo los encabezados, metadatos o información de control necesaria para la entrega del mensaje*/
 
     } catch (error) {
-        console.error("Error obteniendo productos", error.message);
+        // Este console.log muestra en la consola del servidor
+        console.error("Error al obtener productos", error);
 
+        // Esta es la respuesta que le devolvemos al cliente, para verla como JSON
         res.status(500).json({
             message: "Error interno al obtener productos"
         });
@@ -32,24 +30,36 @@ export const getAllProducts = async (req, res) => {
 }
 
 
-// GET product by id -> Consultar producto por id
-export const getProductById = async (req, res) => { 
-    // en el parametro tenemos los objetos Request (req) y Response (res)
+
+////////////////////////
+// Get product by id -> Consultar producto por su id
+export const getProductById = async (req, res) => {
     try {
-        // Optimizacion 1: Validar el datos de id (ya se hace en el middleware)
 
-        // Extraemos el valor id de la url
-        // let id = req.params.id; // extraemos el 2 de /products/2
-        let { id } = req.params;
-        
-        const [rows] = await ProductModel.selectProductById(id);
+        // el :id se extrae con el objeto request -> req.params.id
+        let { id } = req.params; // Esto nos permite obtener el valor numerico despues de products //2
 
-        // Optimizacion 3: Comprobamos que exista el producto con ese id
+        /* Pasamos a definir el middleware validateId
+        // Optimizacion 1: Validacion de parametros antes de acceder a la BBDD para evitar hacer una query si el id no es valido
+        // Esta logica luego la hara un middleware validateId -> para EVITAR tener que repetir este codigo 
+        if(!id || isNaN(Number(id))) {
+            return res.status(400).json({
+                message: "El id del producto debe ser un numero valido"
+            });
+        }
+        */
+        /* Si enviara este valor con post, lo recogeria asi:
+        let { id } = req.body;
+        */
+
+        const [rows] = await ProductModels.selectProductWhereId(id);
+
+
+        // Hacemos la consulta, y tenemos el resultado en la variable rows
+        // Optimizacion 2: Comprobamos que existe el producto con ese id
         if(rows.length === 0) {
-            // Este console se muestra en la consola de nuestro servidor
-            console.log(`Error!! No existe producto con el id ${id}`);
+            console.log("Error, no existe producto con ese id");
 
-            // return es CLAVE, porque aca, se termina la ejecucion del codigo
             return res.status(404).json({
                 message: `No se encontro producto con id ${id}`
             });
@@ -61,130 +71,133 @@ export const getProductById = async (req, res) => {
 
 
     } catch (error) {
-        console.log("Error obteniendo producto por id: ", error);
+        console.error("Error obteniendo producto con id", error.message);
 
         res.status(500).json({
-            message: "Error interno del servidor",
-            error: error.message
+            error: "Error interno al obtener un producto con id"
         })
     }
 }
 
 
-// POST -> Crear nuevo producto
+
+//////////////////
+// Crear producto
 export const createProduct = async (req, res) => {
-
     try {
-        // Extraemos e imprimimos los datos del body para ver si llegan correctamente
-        let { name, image, category, price } = req.body;
-        console.log(req.body);
-        console.log(`Nombre producto: ${name}`);
+        const { name, image, category, price } = req.body;
+        // Aca imprimimos lo que enviamos desde el form que previamente se parseo gracias al middleware -> express.json()
+        console.log(req.body); 
 
-
-        // Optimizacion 1: Validamos de datos de entrada
-        if(!category || !image || !name || !price) {
+        // Optimizacion 1: Validacion datos de entrada
+        if(!name || !image || !category || !price) {
             return res.status(400).json({
-                message: "Datos invalidos, asegurate de enviar todos los campos"
+                message: "Datos invalidos, asegurate de enviar todos los campos del formulario"
             });
+            // return hace que el endpoint termine aca y el usuario solo reciba esta respuesta
         }
 
-        let [rows] = await ProductModel.insertProduct(name, image, category, price);
+        let [rows] = await ProductModels.insertProduct(name, image, category, price);
+        // console.log(rows);
 
-
-        // Devolvemos una repuesta con codigo 201 Created
+        // Devolvemos una respuesta 201 "Created"
         res.status(201).json({
-            message: "Producto creado con exito!",
+            message: "Producto creado con exito",
+            productId: rows.insertId
         });
 
+
     } catch (error) {
-        console.log("Error al crear producto: ", error);
+        console.error("Error interno del servidor");
 
         res.status(500).json({
             message: "Error interno del servidor",
             error: error.message
-        })
+        });
     }
 }
 
 
 
-// PUT-> Actualizar producto
+// Modificar un producto
 export const modifyProduct = async (req, res) => {
     try {
-        /*{
-            "id": "2",
-            "name": "hamburguesa salmon",
-            "image": "https://burgernj.com/wp-content/uploads/2021/05/Salmon-Burger_.jpg",
-            "category": "food",
-            "price": "2500.00",
-            "active": "1"
-        }*/
-
-        // Gracias al middleware express.json() convertimos el JSON previo en un objeto JS al que podemos hacer destructuring y almacenar en variables sus valores
+        /*
+        "id": 4,
+        "name": "hamburguesa pollo a la parrilla",
+        "image": "https://burgernj.com/wp-content/uploads/2021/05/Grilled-Chicken-Burger_.jpg",
+        "category": "food",
+        "price": "1500.00",
+        "active": 1
+      */
         let { id, name, image, category, price, active } = req.body;
 
-
-        // Optimizacion 1: Validacion basica de todos los campos recibidos en el body
-        if(!id || !name || !image || !category || !price || !active) {
+        // Optimizacion 1: Validacion basica de datos
+        if(!id || !name || !category || !price || !active) {
             return res.status(400).json({
                 message: "Faltan campos requeridos"
             });
         }
 
-        let [result] = await ProductModel.updateProduct(name, image, category, price, active, id);
 
+        let [result] = await ProductModels.updateProduct(name, image, price, category, id);
         console.log(result);
 
-
-        // Optimizacion 2: Comprobamos que haya filas afectas -> testeamos que se actualizara
-        if (result.affectedRows === 0) { // Si no se actualizo nada
+        // Optimizacion 2: Testeamos que se actualizara este producto
+        if(result.affectedRows === 0) {
             return res.status(400).json({
                 message: "No se actualizo el producto"
-            })
+            });
         }
 
-
         res.status(200).json({
-            message: `Producto con id: ${id} actualizado correctamente`
+            message: "Producto actualizado correctamente"
         });
+        
 
-    } catch(error) {
-        // Vemos el error en la consola del servidor
-        console.error("Error al actualizar producto: ", error);
+    } catch (error) {
+        console.error("Error al actualizar el producto: ", error);
 
-        // Le respondemos al cliente con un codigo 500 y un mensaje de error
         res.status(500).json({
-            message: `Error interno del servidor: ${error}`
-        });
+            message: "Error interno del servidor",
+            error: error.message
+        })
     }
 }
 
 
 
-// DELETE-> Eliminar producto
+// Eliminar producto
 export const removeProduct = async (req, res) => {
     try {
         let { id } = req.params;
 
-        let [result] = await ProductModel.deleteProduct(id);
 
-        // Comprobamos si realmente se elimino un producto
-        if(result.affectedRows === 0) {
-            return res.status(400).json({
-                message: `No se elimino el producto con id: ${id}`
+        let [result] = await ProductModels.deleteProduct(id);
+        console.log(result);
+        // affectedRows: 1 -> Nos indica que hubo una fila que fue afectada
+
+        // Optimizacion 1 -> Ya hacemos la validacion del Id a traves del middleware
+
+        // Optimizacion 2 -> Comprobar si realmente eliminamos un producto
+        if(result.affectedRows === 0) { // Quiere decir que no afectamos ninguna fila
+            return res.status(404).json({
+                message: `No se encontro un producto con id ${id}`
             });
         }
+
 
         return res.status(200).json({
             message: `Producto con id ${id} eliminado correctamente`
         });
 
+
     } catch (error) {
-        console.error("Error al eliminar un producto por su id: ", error);
+        console.log(`Error al eliminar un producto con id ${id}: `, error);
 
         res.status(500).json({
-            message: `Error al eliminar producto con id: ${id}`,
+            message: `Error al eliminar un producto con id ${id}`,
             error: error.message
-        });
+        })
     }
 }

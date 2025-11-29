@@ -1,27 +1,39 @@
-import { Router } from "express"; // Importamos el middleware Router
-const router = Router(); // Lo mismo que hacemos en express con const app = express()
+// Importamos el middleware Router
+import { Router } from "express";
+const router = Router(); // Lo mismo que const app = express();
 
-import { validateId } from "../middlewares/middlewares.js"; // Importamos validateId
+import { validateId } from "../middlewares/middlewares.js"; // Importamos el middleware
 import { createProduct, getAllProducts, getProductById, modifyProduct, removeProduct } from "../controllers/product.controllers.js";
 
+/* CRUD (Create Read Update Delete)
+    - CREATE -> POST
+    - READ -> GET
+    - UPDATE -> PUT
+    - DELETE -> DELETE*/
 
-// GET all products -> Traer todos los productos
+
+////////////////
+// READ -> GET
 router.get("/", getAllProducts);
 
 
-// GET product by id -> Consultar producto por id
-router.get("/:id", validateId , getProductById);
+////////////////
+// READ -> GET
+router.get("/:id", validateId, getProductById);
 
 
-// POST -> Crear nuevo producto
+///////////////////
+// CREATE -> POST
 router.post("/", createProduct);
 
 
-// PUT-> Actualizar producto
+///////////////////
+// UPDATE -> PUT
 router.put("/", modifyProduct);
 
 
-// DELETE-> Eliminar producto
+////////////////
+// DELETE -> DELETE
 router.delete("/:id", validateId, removeProduct);
 
 

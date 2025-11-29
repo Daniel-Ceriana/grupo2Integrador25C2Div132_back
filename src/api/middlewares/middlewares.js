@@ -1,45 +1,52 @@
-/* Los middlewares son simplemente funciones que se ejecutan entre la peticion (request -> req) y la respuesta (response -> res)
+/* Que son los middlewares?
 
-Middleware de aplicacion: Es una funcion que se ejecuta en todas las rutas
+- Los middlewares son basicamente funciones que se ejecutan entre la peticion req y la respuesta res
 
-Middleware de ruta: Es una funcion que se ejecuta en alguna rutas
+- La idea de los middlewares es no repetir instrucciones por cada endpoint
+
+- Estos son middlewares de aplicacion -> se aplican a todas las peticiones
 */
 
-// Middleware logger que muestra por consola todas las solicitudes
+// Middleware de aplicacion -> Se aplica a todas las peticiones y respuestas
+// Middleware (de aplicacion) logger -> Vamos a registrar por consola cada peticion que se produjo
 const loggerUrl = (req, res, next) => {
-    console.log(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
-    next();
+    console.log(`[${new Date().toLocaleString()}]  ${req.method}  ${req.url}`);
+    // Si no llamamos a next, la conexion se queda trabada aca, next permite continuar procesando la operacion
+    next(); 
 }
 
-// Middleware de ruta para validar el id en la ruta /api/products/:id
+
+// Middlewares de ruta -> se aplican a ciertas url
+// Middleware (de ruta) validador de Id
 const validateId = (req, res, next) => {
     const { id } = req.params;
 
-    // Validar que el ID sea un numero (de lo contrario la consulta podria generar un error en la BBDD)
-    if(!id || isNaN(id)) {
+    // Validamos que el id no sea un numero (la consulta podria fallar o generar un error en la BBDD)
+    if(!id || isNaN(Number(id))) {
         return res.status(400).json({
-            message: "El id debe ser un numero"
-        });
-    }
+            message: "El id del producto debe ser un numero valido"
+        })
+    };
 
-    // Convertimos el parametro id (originalmente un string porque viene de una URL) a un numero entero (integer en base 10 decimal)
-    req.id = parseInt(id, 10); // convertimos el id a un entero
+    // Convertimos el parametro id a un numero entero (porque la url viene como string)
+    req.id = parseInt(id, 10);
 
-    console.log("Id validado!: ", req.id);
+    console.log("Id validado: ", req.id);
 
-    next(); // Continuar al siguiente middleware (si lo hay) o con la respuesta
+    next();
 }
 
 
-// Middleware para chequear si existe una sesion creada, si no, redirigir a login
+// Middleware de ruta, para proteger las vistas si no se hizo login
 const requireLogin = (req, res, next) => {
-
+   
     if(!req.session.user) {
         return res.redirect("/login");
     }
-   
-    next();
+
+    next(); // Sin next, la peticion nunca llega a la respuesta (res)
 }
+
 
 export {
     loggerUrl,
