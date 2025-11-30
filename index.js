@@ -20,9 +20,7 @@ import { productRoutes, userRoutes, viewRoutes } from "./src/api/routes/index.js
 import { __dirname, join } from "./src/api/utils/index.js";
 
 import session from "express-session";
-import connection from "./src/api/database/db.js";
 
-import bcrypt from "bcrypt";
 
 
 /*===================
@@ -68,69 +66,7 @@ app.use("/", viewRoutes);
 
 app.use("/api/users", userRoutes);
 
-// Creamos el endpoint que recibe los datos que enviamos del <form> del login.ejs
-app.post("/login", async (req, res) => {
-    try {
-        const { email, password } = req.body; // Recibimos el email y el password
 
-        if(!email || !password) {
-            return res.render("login", {
-                title: "login",
-                error: "Todos los campos son necesarios!"
-            });
-        }
-
-
-
-        const sql = "SELECT * FROM usuarios where email = ?";
-        const [rows] = await connection.query(sql, [email]);
-
-
-        // Si no recibimos nada, es porque no se encuentra un usuario con ese email o password
-        if(rows.length === 0) {
-            return res.render("login", {
-                title: "Login",
-                error: "Error! Email o password no validos"
-            });
-        }
-
-        console.log(rows);
-        const user = rows[0];
-        console.table(user);
-
-        // Comparamos el password hasheado 
-        const match = await bcrypt.compare(password, user.password);
-
-        console.log(match);
-
-        //si es el acceso rapido, se saltea el bcypt
-        if(match || user.email == 'admin@gmail.com') {            
-            // Guardamos la sesion
-            req.session.user = {
-                id: user.id,
-                name: user.name,
-                email: user.email
-            }
-    
-            // Una vez guardada la sesion, vamos a redireccionar al dashboard
-            res.redirect("/");
-
-        } else {
-            return res.render("login", {
-                title: "Login",
-                error: "Epa! Contraseña incorrecta"
-            });
-        }
-
-
-    } catch (error) {
-        console.log("Error en el login: ", error);
-
-        res.status(500).json({
-            error: "Error interno del servidor"
-        });
-    }
-});
 
 
 // Endpoint para /logout 
