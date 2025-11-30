@@ -1,0 +1,59 @@
+main h3{
+    margin: 3px;
+}
+main p{
+    margin: 3px;
+} 
+#contenedor-productos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.card-producto {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid;
+    margin: 10px;
+    font-size: 12px;
+    text-align: center;
+    justify-content: space-evenly;
+}
+
+.card-producto img {
+    margin-top: 15px;
+    width: 15vw;
+    height: auto;  /* recomendable */
+    object-fit: cover; /* opcional: ajusta cómo se recorta */
+}
+
+.card-producto p {
+    font-size: medium;
+    font-weight: 600;
+}
+
+.margen-interno-card{
+    margin: 10px;
+}
+
+/* Estilos genericos de botones: */
+main button{
+    font-family:
+    -apple-system,   /* macOS, iOS → San Francisco */
+    BlinkMacSystemFont, /* Chrome en Mac */
+    "Segoe UI",      /* Windows */
+    Roboto,          /* Android, ChromeOS */
+    Helvetica,       /* Linux / fallback */
+    Arial,
+    sans-serif;
+    margin: 3px;
+    padding: 3px 7px;
+    background-color: var(--color-rojo-1) ;
+    font-weight: 500;
+    border-radius: 6px;
+}
+
+main button:hover{
+    color: white;
+}

@@ -1,3 +1,10 @@
+:root {
+  /* Colores botones */
+  --color-rojo-1: #ef4565;
+  --color-rojo-2: #d93e5b;
+  --color-rojo-3: #c9041d;
+}
+
 /*================
     General
 ================*/
@@ -44,45 +51,6 @@ nav ul {
 /*================
     main
 ================*/
-#contenedor-productos {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.card-producto {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    border: 2px solid;
-    width: 250px;
-    height: 350px;
-    margin: 5px;
-    font-size: 12px;
-    text-align: center;
-    justify-content: space-evenly;
-}
-
-.card-producto p {
-    font-size: medium;
-    font-weight: 600;
-}
-
-#contenedor-productos h3, #contenedor-productos p {
-    margin: 0;
-}
-
-.card-producto img {
-    width: 75%;
-    height: auto;  /* recomendable */
-    object-fit: cover; /* opcional: ajusta cómo se recorta */
-}
-
-
-
-#listado-productos {
-    width: 100%;
-    display: flex;
-    font-size: 14px;
-    justify-content: space-between;
+body{
+    margin: 15px;
 }

@@ -1,5 +1,5 @@
 <%- include("partials/head.ejs") %>
-    
+    <link rel="stylesheet" href="/css/index-styles.css">
 </head>
 <body>
 <%- include("partials/nav.ejs") %>
@@ -11,16 +11,19 @@
         <!-- Vamos a iterar el array de productos que le pasamos desde el endpoint -->
         <% productos.forEach(prod => { %>
             <div class="card-producto">
-                <img src="<%= prod.imagen_direccion %>" alt="<%= prod.nombre %>">
-                <h3><%= prod.nombre %></h3>
-                <p>Id: <%= prod.id %></p>
-                <p>$<%= prod.precio %></p>
-                <form action="/consultar/<%= prod.id %>" method="GET">
-                    <button type="submit">Ver producto</button>
-                </form>
-                <form action="/modificar/<%= prod.id %>" method="GET">
-                    <button type="submit">Modificar producto</button>
-                </form>
+                <div class="margen-interno-card">
+                    <img src="<%= prod.imagen_direccion %>" alt="<%= prod.nombre %>">
+                    <h3><%= prod.nombre %></h3>
+                    <p>Id: <%= prod.id %></p>
+                    <p>activo: <%= prod.activo %></p>
+                    <p>$<%= prod.precio %></p>
+                    <form action="/consultar/<%= prod.id %>" method="GET">
+                        <button type="submit">Ver detalle</button>
+                    </form>
+                    <form action="/modificar/<%= prod.id %>" method="GET">
+                        <button type="submit">Modificar</button>
+                    </form>
+                </div>
             </div>
         <% }) %>
 
