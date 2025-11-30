@@ -35,8 +35,17 @@ router.get("/crear", requireLogin, (req, res) => {
 router.get("/modificar", requireLogin, (req, res) => {
     res.render("modificar", {
         title: "Modificar",
-        about: "Actualizar producto"
+        about: "Actualizar producto",
+        id:-1
     })
+});
+router.get("/modificar/:id", requireLogin, (req, res) => {
+    const { id } = req.params;
+    res.render("modificar", {
+        title: "Modificar",
+        about: "Actualizar producto",
+        id
+    });
 });
 
 router.get("/eliminar", requireLogin, (req, res) => {

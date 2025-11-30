@@ -18,12 +18,14 @@
                 <form action="/consultar/<%= prod.id %>" method="GET">
                     <button type="submit">Ver producto</button>
                 </form>
-                <input class="btnModificar" type="button" value="Modificar" data-itemId="<%=prod.id%>">
+                <form action="/modificar/<%= prod.id %>" method="GET">
+                    <button type="submit">Modificar producto</button>
+                </form>
             </div>
         <% }) %>
 
     </div>
 </main>
-<script src="js/pantalla-index.js"></script>
+<script src="/js/pantalla-index.js"></script>
 
 <%- include("partials/footer.ejs") %>

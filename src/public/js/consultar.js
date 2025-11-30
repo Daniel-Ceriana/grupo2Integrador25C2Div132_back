@@ -1,4 +1,3 @@
-// import {port} from "../../api/config/environments";
 let url = `http://localhost:3000`;
 
 // Seleccion de elementos del DOM
@@ -20,15 +19,15 @@ function desglosarEvento(event) {
     console.log(data); // { idProd: '2' }
 
     let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
-    mostrarItem(idProd);
+    pedirItem(idProd);
 }
 
 if(id>0){
-    mostrarItem(id);
+    pedirItem(id);
 }
 
 //realiza la peticion get y llama a la funcion para renderizarlo
-async function mostrarItem(idProd) {
+async function pedirItem(idProd) {
 
 
     console.log(idProd);

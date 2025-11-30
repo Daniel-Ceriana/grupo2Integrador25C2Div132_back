@@ -2,7 +2,9 @@
 <%- include("partials/nav.ejs") %>
 
 <main>
-
+    <p>El ID recibido es: <%= id %></p>
+        <!-- para directamente buscar el producto -->
+        <input type="hidden" id="productoId" value="<%= id %>">
     <form id="getProduct-form">
         <label for="idProd">Id del producto</label>
         <input type="number" name="idProd" id="idProd" required>
@@ -18,6 +20,6 @@
     <section id="updateFormContainer"></section>
 </main>
 
-<script src="js/modificar.js"></script>
+<script src="/js/modificar.js"></script>
 
 <%- include("partials/footer.ejs") %>

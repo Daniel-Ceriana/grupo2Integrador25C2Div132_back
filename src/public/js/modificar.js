@@ -5,55 +5,60 @@ let url = `http://localhost:3000`;
 let listaProductos = document.getElementById("lista-productos");
 let getProductForm = document.getElementById("getProduct-form");
 let updateFormContainer = document.getElementById("updateFormContainer");
+const id = document.getElementById("productoId").value;
 
+getProductForm.addEventListener("submit", (event) => desglosarEvento(event));
 
-getProductForm.addEventListener("submit", async (event) => {
-    
-    event.preventDefault(); 
-
-    
+function desglosarEvento(event) {
+    event.preventDefault(); // Prevenimos el envio por defecto del formulario
     let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
+
 
     // Transformamos a objetos JS los valores de FormData
     let data = Object.fromEntries(formData.entries());
-    console.log(data); // Object { idProd: '2' }
+    console.log(data); // { idProd: '2' }
 
     let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
-    console.log(idProd);
+    pedirItem(idProd);
+}
 
-    console.log(`Realizando una peticion GET a la url ${url}/api/products/${idProd}`);
-    
-    // Enviamos en una peticion GET el id pegado a la url
-    let response = await fetch(`${url}/api/products/${idProd}`);
+if(id>0){
+    pedirItem(id);
+}
 
-    let datos = await response.json();
-    console.log(datos);
+async function pedirItem(idProd) {
+ // Enviamos en una peticion GET el id pegado a la url
+ let response = await fetch(`${url}/api/products/${idProd}`);
 
-     // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
-    let producto = datos.payload[0]; // Accedo al objeto que se encuentra en la posicion 0 de payload
-    console.log(producto);
+ let datos = await response.json();
+ console.log(datos);
 
-    let htmlProducto = `
-        <li class="li-producto">
-                <img class="producto-img" src="${producto.image}" alt="${producto.name}">
-                <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
-        </li>
-        <li class="li-botonera">
-            <input type="button" id="updateProduct_button" value="Actualizar producto">
-        </li>
-    `;
+  // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
+ let producto = datos.payload[0]; // Accedo al objeto que se encuentra en la posicion 0 de payload
+ console.log(producto);
 
-    listaProductos.innerHTML = htmlProducto;
+ let htmlProducto = `
+     <li class="li-producto">
+             <img class="producto-img" src="${producto.image}" alt="${producto.name}">
+             <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
+     </li>
+     <li class="li-botonera">
+         <input type="button" id="updateProduct_button" value="Actualizar producto">
+     </li>
+ `;
 
-    let updateProduct_button = document.getElementById("updateProduct_button");
+ listaProductos.innerHTML = htmlProducto;
 
-    updateProduct_button.addEventListener("click", event => {
-        
-        event.stopPropagation();
+ let updateProduct_button = document.getElementById("updateProduct_button");
 
-        crearFormulario(producto);
-    })
-});
+ updateProduct_button.addEventListener("click", event => {
+     
+     event.stopPropagation();
+
+     crearFormulario(producto);
+ });
+}
+   
 
 
 async function crearFormulario(producto) {
