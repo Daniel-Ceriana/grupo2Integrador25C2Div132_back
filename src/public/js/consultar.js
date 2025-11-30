@@ -1,5 +1,5 @@
-import {port} from "../../api/config/environments";
-let url = `http://localhost:${port}`;
+// import {port} from "../../api/config/environments";
+let url = `http://localhost:3000`;
 
 // Seleccion de elementos del DOM
 let listaProductos = document.getElementById("lista-productos");

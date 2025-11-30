@@ -1,5 +1,4 @@
-import {port} from "../../api/config/environments";
-let url = `http://localhost:${port}`;
+let url = `http://localhost:3000`;
 
 
 // Seleccion de elementos del DOM
