@@ -1,0 +1,161 @@
+/*==========================================
+  Variables de estilo globales
+==========================================*/
+:root {
+    /* Colores de letras */
+    --color-negro-1: #212322;
+    --color-blanco-1: #ffffff;
+
+    /* Colores principales */
+    --color-rojo-1: #ef4565;
+    --color-rojo-2: #d93e5b;
+    --color-rojo-3: #c9041d;
+
+    --color-celeste-1: #3da9fc;
+    --color-celeste-2: #269df8;
+    --color-celeste-3: #1596f8;
+
+    --color-bordes-1: #094067;
+    --color-parrafos-1: #5f6c7b;
+
+    /* Fondos */
+    --background-header-nav: #d5ddee;
+    --background-main: #d5ddee;
+    --background-main-conteiner: #A3B5DC;
+
+    /* Tipografía */
+    --font-global: 'Orbitron', sans-serif;
+}
+
+/*==========================
+  Contenedor principal
+==========================*/
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--background-main);
+  margin: 0 10px;
+  border-left: 3px solid var(--color-bordes-1);
+  border-right: 3px solid var(--color-bordes-1);
+  font-family: var(--font-global);
+}
+
+section form{
+  padding: 20px;
+  gap: 3px;
+}
+
+/*==========================
+  Sección de login
+==========================*/
+.user-login-form {
+  width: 100%;
+  max-width: 400px;
+  margin: 2rem auto;
+  font-weight: 700;
+  border: 2px solid var(--color-celeste-1);
+  background-color: var(--background-main-conteiner);
+}
+
+.user-login-form details {
+  border: 2px solid var(--color-celeste-1);
+  background-color: var(--background-main-conteiner);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+/*==========================
+  Formulario y Fieldset
+==========================*/
+.user-login-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+.fieldset-style {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 2px solid var(--color-celeste-1);
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: #f7f9fc;
+}
+
+/*==========================
+  Labels e Inputs
+==========================*/
+.user-login-form label {
+  font-weight: 500;
+  margin-bottom: 0.3rem;
+  color: var(--color-negro-1);
+}
+
+.user-login-form input {
+  background-color: #e0e2ec;
+  border: 0;
+  padding: 8px 10px;
+  border-bottom: 2px solid black;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+}
+
+.user-login-form input:hover {
+  background-color: #d5d3d6;
+}
+
+.user-login-form input:focus {
+  border-color: var(--color-celeste-2);
+  box-shadow: 0 0 5px rgba(58, 169, 252, 0.4);
+  outline: none;
+}
+
+/*==========================
+  Botones
+==========================*/
+.btn-send-form-generic-style {
+  background-color: var(--color-rojo-1);
+  font-family: var(--font-global);
+  font-weight: 700;
+  border-radius: 6px;
+  border: 2px solid var(--color-bordes-1);
+  padding: 10px 15px;
+  color: var(--color-negro-1);
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.btn-send-form-generic-style:hover {
+  background-color: var(--color-rojo-2);
+  color: var(--color-blanco-1);
+}
+
+/* Botón de acceso rápido */
+#acceso-rapido {
+  margin-top: 0.5rem;
+}
+
+/*==========================
+  Responsivo
+==========================*/
+@media (max-width: 700px) {
+  .user-login-form {
+    margin: 1rem;
+  }
+
+  .fieldset-style {
+    padding: 1rem;
+  }
+
+  .user-login-form input,
+  .btn-send-form-generic-style {
+    font-size: 0.9rem;
+  }
+}
