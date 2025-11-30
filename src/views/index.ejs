@@ -15,7 +15,9 @@
                 <h3><%= prod.nombre %></h3>
                 <p>Id: <%= prod.id %></p>
                 <p>$<%= prod.precio %></p>
-                <input class="btnDetalles" type="button" value="Ver detalles" data-itemId="<%=prod.id%>">
+                <form action="/consultar/<%= prod.id %>" method="GET">
+                    <button type="submit">Ver producto</button>
+                </form>
                 <input class="btnModificar" type="button" value="Modificar" data-itemId="<%=prod.id%>">
             </div>
         <% }) %>

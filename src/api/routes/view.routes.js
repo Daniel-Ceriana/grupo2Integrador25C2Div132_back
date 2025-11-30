@@ -7,13 +7,21 @@ router.get("/", requireLogin, productsView);
 router.get("/index", requireLogin, productsView);
 
 router.get("/consultar", requireLogin, (req, res) => {
-
-
     res.render("consultar", {
         title: "Consultar",
-        about: "Consultar producto por id"
+        about: "Consultar producto por id",
+        id:-1
     });
 });
+router.get("/consultar/:id", requireLogin, (req, res) => {
+    const { id } = req.params;
+    res.render("consultar", {
+        title: "Consultar",
+        about: "Consultar producto por id",
+        id
+    });
+});
+
 
 
 router.get("/crear", requireLogin, (req, res) => {

@@ -18,6 +18,7 @@ router.get("/:id", validateId, getProductById);
 router.post("/", createProduct);
 
 
+
 ///////////////////
 // UPDATE -> PUT
 router.put("/", modifyProduct);
