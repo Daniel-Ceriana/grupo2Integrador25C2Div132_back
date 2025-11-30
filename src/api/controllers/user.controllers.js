@@ -29,7 +29,7 @@ export const insertUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.log("Error interno del servidor");
+        console.log("Error interno del servidor", error);
 
         res.status(500).json({
             message: "Error interno del servidor",

@@ -50,7 +50,6 @@ router.post("/login", async (req, res) => {
             // Guardamos la sesion
             req.session.user = {
                 id: user.id,
-                name: user.name,
                 email: user.email
             }
     
