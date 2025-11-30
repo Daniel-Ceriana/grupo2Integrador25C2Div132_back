@@ -9,7 +9,7 @@ const selectAllProducts = () => {
 
 
         // Optimizacion 1: Seleccionar solamente los campos necesarios -> name, image, category, price porque es la unica informacion que necesita ver el cliente
-        const sql = `SELECT * FROM products`;
+        const sql = `SELECT * FROM productos`;
         return connection.query(sql); // Retorna una promesa que se resuelve en el controlador
 }
 
@@ -17,7 +17,7 @@ const selectAllProducts = () => {
 // Seleccionar producto por id
 const selectProductWhereId = (id) => {
 
-      let sql = `SELECT * FROM products where id = ?`;
+      let sql = `SELECT * FROM productos where id = ?`;
       return connection.query(sql, [id]);
 }
 
@@ -25,7 +25,7 @@ const selectProductWhereId = (id) => {
 // Crear producto
 const insertProduct = (name, image, category, price) => {
 
-     let sql = "INSERT INTO products (name, image, category, price) VALUES (?, ?, ?, ?)";
+     let sql = "INSERT INTO productos (name, image, category, price) VALUES (?, ?, ?, ?)";
 
      // Le enviamos estos valores a la BBDD
      return connection.query(sql, [name, image, category, price]);
@@ -37,7 +37,7 @@ const insertProduct = (name, image, category, price) => {
 const updateProduct = (name, image, price, category, id) => {
 
     let sql = `
-        UPDATE products
+        UPDATE productos
         SET name = ?, image = ?, price = ?, category = ?
         WHERE id = ?
     `;
@@ -50,7 +50,7 @@ const updateProduct = (name, image, price, category, id) => {
 const deleteProduct = (id) => {
 
       //Baja logica
-      let sql = "UPDATE products set active = 0 WHERE id = ?";
+      let sql = "UPDATE productos set active = 0 WHERE id = ?";
 
       return connection.query(sql, [id]);
 }

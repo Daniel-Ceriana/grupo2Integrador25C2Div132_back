@@ -8,9 +8,9 @@ import UserModels from "../models/user.models.js";
 export const insertUser = async (req, res) => {
     try {
 
-        const { name, email, password } = req.body;
+        const { email, password } = req.body;
 
-        if(!name ||!email ||!password) {
+        if(!email ||!password) {
             return res.status(400).json({
                 message: "Datos invalidos, asegurate de enviar todos los campos del formulario"
             });
@@ -21,11 +21,11 @@ export const insertUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Con la contraseña hasheada
-        const [rows] = await UserModels.insertUser(name, email, hashedPassword);
+        const [rows] = await UserModels.insertUser(email, hashedPassword);
         
         res.status(201).json({
             message: "Usuario creado con exito",
-            userId: rows.insertId
+            id: rows.insertId
         });
 
     } catch (error) {

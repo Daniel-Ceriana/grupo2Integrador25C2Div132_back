@@ -82,7 +82,7 @@ app.post("/login", async (req, res) => {
 
 
 
-        const sql = "SELECT * FROM users where email = ?";
+        const sql = "SELECT * FROM usuarios where email = ?";
         const [rows] = await connection.query(sql, [email]);
 
 
@@ -103,7 +103,8 @@ app.post("/login", async (req, res) => {
 
         console.log(match);
 
-        if(match) {            
+        //si es el acceso rapido, se saltea el bcypt
+        if(match || user.email == 'admin@gmail.com') {            
             // Guardamos la sesion
             req.session.user = {
                 id: user.id,

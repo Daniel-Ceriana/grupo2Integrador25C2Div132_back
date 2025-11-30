@@ -4,6 +4,7 @@ import { requireLogin } from "../middlewares/middlewares.js";
 const router = Router();
 
 router.get("/", requireLogin, productsView);
+router.get("/index", requireLogin, productsView);
 
 router.get("/consultar", requireLogin, (req, res) => {
 
