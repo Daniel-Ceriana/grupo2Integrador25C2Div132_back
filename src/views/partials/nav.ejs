@@ -1,28 +1,26 @@
 <header>
     <nav>
         <ul>
-            <a href="/">
-                <li>Ver</li>
+            <a href="/index" class="nav_link">
+                <li>Inicio</li>
             </a>
-            <a href="/consultar">
+            <a href="/consultar" class="nav_link">
                 <li>Consultar id</li>
             </a>
-            <a href="/crear">
+            <a href="/crear" class="nav_link">
                 <li>Crear</li>
             </a>
-            <a href="/modificar">
+            <a href="/modificar" class="nav_link">
                 <li>Modificar</li>
             </a>
-            <a href="/eliminar">
+            <a href="/eliminar" class="nav_link">
                 <li>Eliminar</li>
             </a>
+            
+            <form action="/logout" id="logout" method="post">
+                <input class="nav_link" type="submit" value="Cerrar sesion">
+            </form> 
+
         </ul>
     </nav>
-
-    <!-- Boton para destruir sesion y redirigir a /login -->
-    <form action="/logout" id="logout" method="POST">
-        <input type="submit" value="Cerrar sesion">
-    </form>
 </header>
-<h1><%= about %></h1>
-<hr>

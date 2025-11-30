@@ -1,5 +1,7 @@
 <%- include("partials/head.ejs") %>
-
+    <link rel="stylesheet" href="/css/login-styles.css">
+</head>
+<body>
 <main id="login-container">
     <h1>Login dashboard</h1>
     
@@ -11,19 +13,27 @@
     <% } %>
     
     
-    <form action="/login" method="POST" autocomplete="off" id="login-form">
+    <!-- Haremos el envio de datos desde el <form> de HTML, sin fetch!
+    Esto nos implicara tener que parsear datos no JSON, crearemos un nuevo middleware
     
-        <label for="emailUser">Email</label>
-        <input type="email" name="email" id="emailUser" required>
-    
-        <label for="passwordUser">Password</label>
-        <input type="password" name="password" id="passwordUser" required>
-    
-        <div class="login-botonera">
-            <input type="submit" value="Login">
-            <input type="button" id="acceso-rapido" value="Acceso rapido">
-        </div>
-    </form>
+    // Middleware para parsear las solicitudes POST que enviamos desde el <form> HTML
+    app.use(express.urlencoded({ extended: true }));
+    -->
+  <section class="user-login-form">
+
+      <form action="/login" method="POST" autocomplete="off" id="login-form">
+          <label for="emailUser">Correo electrónico:</label>
+          <input placeholder="usuario@gmail.com" type="email" name="email" id="emailUser" required>
+
+          <label for="passwordUser">Contraseña:</label>
+          <input placeholder="******" type="password" name="password" id="passwordUser" required>
+
+          <button type="submit" class="btn-send-form-generic-style">Ingresar</button>
+          <button type="button" id="acceso-rapido" class="btn-send-form-generic-style">Acceso rápido</button>
+      </form>
+
+  </section>
+
 </main>
 
 
@@ -36,8 +46,8 @@
     let acceso_rapido = document.getElementById("acceso-rapido");
 
     acceso_rapido.addEventListener("click", () => {
-        emailUser.value = "test@test.com";
-        passwordUser.value = "test"
+        emailUser.value = "admin@gmail.com";
+        passwordUser.value = "123456"
     });
 </script>
 
