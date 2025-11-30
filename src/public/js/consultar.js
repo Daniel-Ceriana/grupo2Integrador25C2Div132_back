@@ -47,8 +47,8 @@ getProductForm.addEventListener("submit", async (event) => {
 function mostrarProducto(producto) {
     let htmlProducto = `
             <li class="li-producto">
-                    <img class="producto-img" src="${producto.image}" alt="${producto.name}">
-                    <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
+                    <img class="producto-img" src="${producto.imagen_direccion}" alt="${producto.nombre}">
+                    <p>Id: ${producto.id} / Nombre: ${producto.nombre} / <strong>Precio: ${producto.precio}</strong></p>
             </li>
         `;
 

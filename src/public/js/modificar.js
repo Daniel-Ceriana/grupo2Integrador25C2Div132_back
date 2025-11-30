@@ -65,13 +65,13 @@ async function crearFormulario(producto) {
             <input type="hidden" name="id" id="idProd" value="${producto.id}">
 
             <label for="nameProd">Nombre</label>
-            <input type="text" name="name" id="nameProd" value="${producto.name}" required>
+            <input type="text" name="name" id="nameProd" value="${producto.nombre}" required>
 
             <label for="imageProd">Imagen</label>
-            <input type="text" name="image" id="imageProd" value="${producto.image}" required>
+            <input type="text" name="image" id="imageProd" value="${producto.imagen_direccion}" required>
 
             <label for="priceProd">Precio</label>
-            <input type="number" name="price" id="priceProd" value="${producto.price}" required>
+            <input type="number" name="price" id="priceProd" value="${producto.precio}" required>
 
             <label for="categoryProd">Categoria</label>
             <select name="category" id="categoryProd" required>
@@ -79,7 +79,7 @@ async function crearFormulario(producto) {
                 <option value="drink">bebida</option>
             </select>
 
-            <input type="hidden" name="active" id="activeProd" value="${producto.active}">
+            <input type="hidden" name="active" id="activeProd" value="${producto.activo}">
 
             <input type="submit" value="Actualizar producto">
         </form>
