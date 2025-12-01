@@ -38,7 +38,7 @@ main form input{
 }
 
 .li-producto img{
-    width: 30vh;
+    width: 40vh;
     height: auto;
 }
 
@@ -55,6 +55,8 @@ main form input{
 
 .descripcion-inferior{
     display: inline-block;
+    max-width: 60vw;
+    margin: 10px;
 }
 .descripcion-inferior span{
     color: #005ba1;

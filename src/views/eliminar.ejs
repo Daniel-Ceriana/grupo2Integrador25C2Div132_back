@@ -1,16 +1,20 @@
 <%- include("partials/head.ejs") %>
+    <link rel="stylesheet" href="/css/eliminar-styles.css">
+</head>
+<body>
 <%- include("partials/nav.ejs") %>
 
 <main>
-
     <form id="getProduct-form">
-        <label for="idProd">Id del producto</label>
-        <input type="number" name="idProd" id="idProd" required>
-
-        <input type="submit" value="Consultar producto">
+        <div class="encabezado-busqueda">
+            <label for="idProd">Ingrese el ID del producto</label>
+            <input type="number" name="idProd" id="idProd" required>
+            
+            <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
+        </div>
     </form>
 
-    <hr>
+
     <section id="contenedor-productos">
         <ul id="lista-productos"></ul>
     </section>

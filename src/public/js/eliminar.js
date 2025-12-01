@@ -1,44 +1,42 @@
 let url = `http://localhost:3000`;
 
-// Seleccion de elementos del DOM
 let listaProductos = document.getElementById("lista-productos");
 let getProductForm = document.getElementById("getProduct-form");
 
-
-
 getProductForm.addEventListener("submit", async (event) => {
-    
-    event.preventDefault(); // Prevenimos el envio por defecto del formulario
+    event.preventDefault();
 
-    
-    let formData = new FormData(event.target); //Creamos un nuevo objeto FormData a partir de los datos del formulario
-
-
-    // Transformamos a objetos JS los valores de FormData
+    let formData = new FormData(event.target);
     let data = Object.fromEntries(formData.entries());
-    console.log(data); // { idProd: '2' }
+    let idProd = data.idProd;
 
-    let idProd = data.idProd; // Ahora ya tenemos guardado en una variable el valor del campo del formulario
-    console.log(idProd);
-
-    console.log(`Realizando una peticion GET a la url ${url}/api/products/${idProd}`);
-    
-    // Enviamos en una peticion GET el id pegado a la url
     let response = await fetch(`${url}/api/products/${idProd}`);
-
     let datos = await response.json();
 
-     // Extraemos de la respuesta payload, el primer resultado que contiene el objeto que consultamos
+    if (!response.ok) {
+        mostrarError(datos.message || "Producto no encontrado");
+        return;
+    }
+
     let producto = datos.payload[0];
-    console.log(producto);
+
+    if(producto.activo === 0){
+        alert("El producto ya se encuentra inactivo");
+        return;
+    }
 
     let htmlProducto = `
-        <li class="li-producto">
-                <img class="producto-img" src="${producto.image}" alt="${producto.name}">
-                <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
-        </li>
         <li class="li-botonera">
             <input type="button" id="deleteProduct_button" value="Eliminar producto">
+        </li>
+        <li class="li-producto">
+            <img class="producto-img" src="${producto.imagen_direccion}" alt="${producto.nombre}">
+            <p>ID: <span>${producto.id}</span></p>
+            <p>Nombre: <span>${producto.nombre}</span></p>
+            <p>Precio: <span>$${producto.precio}</span></p>
+            <p>Categoría: <span>${producto.categoria}</span></p>
+            <p>Activo: <span>${producto.activo}</span></p>
+            <p>Empresa responsable: <span>${producto.empresa_responsable}</span></p>
         </li>
     `;
 
@@ -47,22 +45,16 @@ getProductForm.addEventListener("submit", async (event) => {
     let deleteProduct_button = document.getElementById("deleteProduct_button");
 
     deleteProduct_button.addEventListener("click", event => {
-        
         event.stopPropagation();
-
         let confirmacion = confirm("Queres eliminar este producto?");
 
-        if(!confirmacion) {
-            alert("Eliminacion cancelada");
+        if (!confirmacion) return;
 
-        } else {
-            eliminarProducto(producto.id);
-        }
-    })
+        eliminarProducto(producto.id);
+    });
 });
 
 async function eliminarProducto(id) {
-
     try {
         let response = await fetch(`${url}/api/products/${id}`, {
             method: "DELETE"
@@ -70,19 +62,27 @@ async function eliminarProducto(id) {
 
         let result = await response.json();
 
-        if(response.ok) {
-            alert(result.message);
-
-            // Sacamos el producto listado de la pantalla
-            listaProductos.innerHTML = "";
-
-        } else {
-            console.error("Error: ", result.message);
-            alert("No se pudo eliminar el producto");
+        if (!response.ok) {
+            mostrarError(result.message || "No se pudo eliminar el producto");
+            return;
         }
 
+        listaProductos.innerHTML = "";
+        alert(result.message);
+
     } catch (error) {
-        console.error("Error en la solicitud DELETE: ", error);
-        alert("Ocurrio un error al eliminar un producto");
+        console.error("Error: ", error);
+        mostrarError("Ocurrió un error al eliminar el producto");
     }
+}
+
+function mostrarError(message) {
+    listaProductos.innerHTML = `
+        <li class="mensaje-error">
+            <p>
+                <strong>Error:</strong>
+                <span>${message}</span>
+            </p>
+        </li>
+    `;
 }
