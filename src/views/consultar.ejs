@@ -1,19 +1,21 @@
 <%- include("partials/head.ejs") %>
+    <link rel="stylesheet" href="/css/consultar-styles.css">
+</head>
+<body>
 <%- include("partials/nav.ejs") %>
 
 <main>
-    <p>El ID recibido es: <%= id %></p>
-    <!-- para directamente buscar el producto -->
-    <input type="hidden" id="productoId" value="<%= id %>">
+    <div class="encabezado-busqueda">
+        <input type="hidden" id="productoId" value="<%= id %>">
+        
+        <form id="getProduct-form">
+            <label for="idProd">Buscar por ID del producto</label>
+            <input placeholder="1" type="number" name="idProd" id="idProd" required>
+            <button type="submit"><ion-icon name="search-outline"></ion-icon></button>
+        </form>
+        
+    </div>
 
-    <form id="getProduct-form">
-        <label for="idProd">Id del producto</label>
-        <input type="number" name="idProd" id="idProd" required>
-
-        <input type="submit" value="Consultar producto">
-    </form>
-
-    <hr>
     <section id="contenedor-productos">
         <ul id="lista-productos"></ul>
     </section>

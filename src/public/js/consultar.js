@@ -59,9 +59,17 @@ async function pedirItem(idProd) {
 function mostrarProducto(producto) {
     let htmlProducto = `
             <li class="li-producto">
-                    <img class="producto-img" src="${producto.imagen_direccion}" alt="${producto.nombre}">
-                    <p>Id: ${producto.id} / Nombre: ${producto.nombre} / <strong>Precio: ${producto.precio}</strong></p>
+                <img class="producto-img" src="${producto.imagen_direccion}" alt="${producto.nombre}">
+                <div class="descripcion-lateral">
+                    <p>ID: <span>${producto.id}</span></p>
+                    <p>Nombre: <span>${producto.nombre}</span></p>
+                    <p>Precio: <span>$${producto.precio}</span></p>
+                    <p>Categoría: <span>${producto.categoria}</span></p>
+                    <p>Activo: <span>${producto.activo}</span></p>
+                    <p>Empresa responsable: <span>${producto.empresa_responsable}</span></p>
+                </div>
             </li>
+            <p class="descripcion-inferior">Descripción: <span>${producto.descripcion}</span></p>
         `;
 
     listaProductos.innerHTML = htmlProducto;
