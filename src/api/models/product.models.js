@@ -50,7 +50,7 @@ const updateProduct = (name, image, price, category, id) => {
 const deleteProduct = (id) => {
 
       //Baja logica
-      let sql = "UPDATE productos set active = 0 WHERE id = ?";
+      let sql = "UPDATE productos set activo = 0 WHERE id = ?";
 
       return connection.query(sql, [id]);
 }
