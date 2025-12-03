@@ -3,6 +3,7 @@
   --color-rojo-1: #ef4565;
   --color-rojo-2: #d93e5b;
   --color-rojo-3: #c9041d;
+  --background: #dfe4eb;
 }
 
 /*================
@@ -38,7 +39,7 @@ nav ul {
     text-decoration: none;
     font-size: large;
     font-weight: 500;
-    background-color: #dfe4eb;
+    background-color: var(--background);
     padding: 7px;
     border: solid 2px #0c141f;
 }

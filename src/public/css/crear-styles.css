@@ -1,0 +1,63 @@
+#alta-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+}
+
+/* Contenedores de ambos formularios */
+.form-container {
+    background-color: var(--background);
+    padding: 15px;
+    border-radius: 12px;
+    width: 340px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+/* Títulos */
+.form-container h3 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+
+/* Forms */
+
+.form-alta {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-alta label {
+    margin-top: 5px;
+}
+
+.form-alta input,
+.form-alta select,
+.form-alta textarea {
+    padding: 10px;
+    border: 2px solid;
+}
+.submit{
+    font-size: 1rem;
+    font-weight: 600;
+}
+.submit:hover{
+    cursor: pointer;
+    background-color: var(--background);
+}
+
+
+
+/* responsivo */
+
+@media (max-width: 760px) {
+    #alta-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}
