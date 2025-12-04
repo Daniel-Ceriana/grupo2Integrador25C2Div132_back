@@ -8,8 +8,6 @@ import environments from "./src/api/config/environments.js";
 const PORT = environments.port;
 const session_key = environments.session_key;
 
-import cors from "cors"; 
-
 // Importamos los middlewares
 import { loggerUrl } from "./src/api/middlewares/middlewares.js"; 
 
@@ -24,10 +22,37 @@ import session from "express-session";
 
 
 /*===================
+    Configuracion de cors
+====================*/
+import cors from "cors";
+
+const allowedOrigins = [
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501",
+    "http://localhost:3000",
+    "http://localhost:5173"
+];
+
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // permitir solicitudes sin origen (como POST desde Postman)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error("Origen no permitido por CORS"));
+        }
+    },
+    methods: ["GET","POST","PUT","DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true 
+}));
+
+/*===================
     Middlewares
 ====================*/
-app.use(cors());
-
 // Middleware para parsear las solicitudes POST y PUT que envian JSON en el body
 app.use(express.json());
 
@@ -66,6 +91,58 @@ app.use("/", viewRoutes);
 
 app.use("/api/users", userRoutes);
 
+import connection from "./src/api/database/db.js";
+
+app.post("/api/sales", async (req, res) => {
+    try {
+        // Recibimos los datos del cuerpo de la peticion HTTP
+        let { total_price, user_name, products, arrayProductos } = req.body;
+
+        // Validacion de datos obligatorios
+        if(!total_price || !user_name || !Array.isArray(products) || !Array.isArray(arrayProductos)) {
+            return res.status(400).json({
+                message: "Datos invalidos, debes total_price, user_name, products (array), arrayProductos (array)"
+            });
+        }
+
+        // 1. Insertar la venta en la tabla "sales"
+        const sqlSale = "INSERT INTO ventas (nombre_usuario, total) VALUES (?, ?)";
+        const [saleResult] = await connection.query(sqlSale, [user_name, total_price]);
+
+        // 2. Obtenemos el id de la venta recien creada
+        const saleId = saleResult.insertId;
+
+        // 3. Insertamos los productos en "ventas_productos"
+        const sqlProductSale = `
+            INSERT INTO ventas_productos (venta_id, producto_id, precio, cantidad) VALUES (?, ?, ?, ?)`;
+
+        for (const item of arrayProductos) {
+            const productId = item.id;
+            const precio = item.precio;
+            const cantidad = item.cantidad;
+
+            await connection.query(sqlProductSale, [
+                saleId,       // venta_id
+                productId,    // producto_id
+                precio,       // precio unitario o total, según tu BD
+                cantidad      // cantidad
+            ]);
+}
+
+        // Respuesta de exito
+        res.status(201).json({
+            message: "Venta registrada con exito!"
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: "Error interno del servidor",
+            error: error.message
+        })
+    }
+})
 
 
 
