@@ -14,22 +14,22 @@
             <input type="text" name="nombre" id="nombreProd" required>
     
             <label for="imagenProd">Imagen</label>
-            <input type="text" name="image" id="imagenProd" required>
+            <input type="text" name="imagen_direccion" id="imagenProd" required>
     
             <label for="precioProd">Precio</label>
             <input type="number" name="precio" id="precioProd" min="0" required>
     
             <label for="categoryProd">Categoria</label>
-            <select name="category" id="categoryProd" required>
-                <option value="video-juego">Video juego</option>
+            <select name="categoria" id="categoriaProd" required>
+                <option value="juego" selected>Juego</option>
                 <option value="consola">Consola</option>
             </select>
 
             <label for="descripcionProd">Descripcion</label>
-            <textarea name="" id="descripcionProd" cols="30" rows="10"></textarea>
+            <textarea name="descripcion" id="descripcionProd" cols="30" rows="10"></textarea>
 
             <label for="empresaProd">Empresa responsable</label>
-            <input type="text" name="empresa" id="empresaProd" required>
+            <input type="text" name="empresa_responsable" id="empresaProd" required>
     
             <input class="submit" type="submit" value="Crear producto">
         </form>

@@ -65,19 +65,20 @@ export const getProductById = async (req, res) => {
 // Crear producto
 export const createProduct = async (req, res) => {
     try {
-        const { nombre, imagen_direccion, categoria,precio } = req.body;
+        const { nombre, imagen_direccion, precio, categoria,descripcion = '',empresa_responsable } = req.body;
         // Aca imprimimos lo que enviamos desde el form que previamente se parseo gracias al middleware -> express.json()
         console.log(req.body); 
+        console.log(descripcion); 
 
         // Optimizacion 1: Validacion datos de entrada
-        if(!nombre || !imagen_direccion || !categoria || !precio) {
+        if(!nombre || !imagen_direccion || !categoria || !precio || !empresa_responsable) {
             return res.status(400).json({
                 message: "Datos invalidos, asegurate de enviar todos los campos del formulario"
             });
             // return hace que el endpoint termine aca y el usuario solo reciba esta respuesta
         }
 
-        let [rows] = await ProductModels.insertProduct(nombre, imagen_direccion, categoria, precio);
+        let [rows] = await ProductModels.insertProduct(nombre, imagen_direccion, precio, categoria,descripcion,empresa_responsable);
         // console.log(rows);
 
         // Devolvemos una respuesta 201 "Created"
