@@ -74,51 +74,65 @@ async function crearFormulario(producto) {
 
     let updateFormHTML = `
     <form id="modificarProducts-container" class="form-modificar">
-    
+
+    <label for="idProd">id</label>
+    <input type="text" name="id" id="idProd" value="${producto.id}" disabled required>
+
     <label for="nombreProd">Nombre</label>
     <input type="text" name="nombre" id="nombreProd" value="${producto.nombre}" required>
 
     <label for="imagenProd">Imagen</label>
-    <input type="text" name="image" id="imagenProd" value="${producto.imagen_direccion}" required>
+    <input type="text" name="imagen_direccion" id="imagenProd" value="${producto.imagen_direccion}" required>
 
     <label for="precioProd">Precio</label>
-    <input type="number" name="precio" id="precioProd" min="0" value="${producto.precio}" required>
+    <input type="number" name="precio" id="precioProd" min="0" step='any' value="${producto.precio}" required>
 
-    <label for="categoryProd">Categoria</label>
-    <select name="category" id="categoryProd" value="${producto.categoria}" required>
-        <option value="video-juego">Video juego</option>
-        <option value="consola">Consola</option>
+    <label for="categoriaProd">Categoria</label>
+    <select name="categoria" id="categoriaProd" value="${producto.categoria}" required>
+    <option value="juego" ${producto.categoria === "juego" ? "selected" : ""}>Juego</option>
+    <option value="consola" ${producto.categoria === "consola" ? "selected" : ""}>Consola</option>
+
     </select>
 
+    <label for="activoProd">Activo:</label>
+    <select name="activo" id="activoProd" required>
+    <option value="1" ${producto.activo == 1 ? "selected" : ""}>Activo</option>
+    <option value="0" ${producto.activo == 0 ? "selected" : ""}>No activo</option>
+
+</select>
+
     <label for="descripcionProd">Descripcion</label>
-    <textarea name="" id="descripcionProd" cols="30" rows="10" value="${producto.descripcion}"></textarea>
+    <textarea name="descripcion" id="descripcionProd" cols="30" rows="10">${producto.descripcion}</textarea>
 
     <label for="empresaProd">Empresa responsable</label>
-    <input type="text" name="empresa" id="empresaProd" value="${producto.empresa_responsable}" required>
+    <input type="text" name="empresa_responsable" id="empresaProd" value="${producto.empresa_responsable}" required>
 
-    <input class='btn' id="updateProducts_form" class="submit" type="submit" value="Actualizar producto">
+    <input id="updateProducts_form" class="submit btn" type="submit" value="Actualizar producto">
 </form>
     `;
 
     contenedorProducto.innerHTML = updateFormHTML;
 
-    let updateProducts_form = document.getElementById("updateProducts_form");
+    let modificarProductsContainer = document.getElementById("modificarProducts-container");
+    modificarProductsContainer.addEventListener("submit", event => {
+        event.preventDefault();
+        event.stopPropagation();
 
-    updateProducts_form.addEventListener("submit", event => {
-        actualizarProducto(event);
+        actualizarProducto(event,producto.id);
     });
 }
 
 
-async function actualizarProducto(event) {
-    event.preventDefault();
-    event.stopPropagation();
+async function actualizarProducto(event,id) {
 
     console.log("Preparando datos del formulario para el PUT");
 
     let formData = new FormData(event.target); // Le pasamos el formulario dinamico de antes al objeto FormData para obtener los datos del nuevo formulario de actualizacion
 
     let data = Object.fromEntries(formData.entries());
+    data.id=id;
+    data.activo = parseInt(data.activo);
+    console.log('estos datos se pasan:');
     console.log(data); // Ya tenemos como objetos JS los datos de nuestro formulario anterior con las nuevas modificaciones
 
     try {

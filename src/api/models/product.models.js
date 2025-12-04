@@ -23,26 +23,26 @@ const selectProductWhereId = (id) => {
 
 
 // Crear producto
-const insertProduct = (name, image, category, price) => {
+const insertProduct = (nombre, imagen_direccion, precio, categoria,descripcion,empresa_responsable) => {
 
-     let sql = "INSERT INTO productos (name, image, category, price) VALUES (?, ?, ?, ?)";
+     let sql = "INSERT INTO productos (nombre, imagen_direccion, precio,categoria,descripcion,empresa_responsable) VALUES (?, ?, ?, ?)";
 
      // Le enviamos estos valores a la BBDD
-     return connection.query(sql, [name, image, category, price]);
+     return connection.query(sql, [nombre, imagen_direccion,precio,categoria ,descripcion,empresa_responsable]);
 }
 
 
 
 // Actualizar producto
-const updateProduct = (name, image, price, category, id) => {
+const updateProduct = (nombre, imagen_direccion, precio, categoria, id,activo,descripcion,empresa_responsable) => {
 
     let sql = `
         UPDATE productos
-        SET name = ?, image = ?, price = ?, category = ?
+        SET nombre = ?, imagen_direccion = ?, precio = ?, categoria = ?, activo = ?, descripcion = ?, empresa_responsable = ?
         WHERE id = ?
     `;
 
-    return connection.query(sql, [name, image, price, category, id]);
+    return connection.query(sql, [nombre, imagen_direccion, precio, categoria,activo,descripcion,empresa_responsable, id]);
 }
 
 

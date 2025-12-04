@@ -102,7 +102,7 @@ export const createProduct = async (req, res) => {
 // Modificar un producto
 export const modifyProduct = async (req, res) => {
     try {
-        let { id, nombre, imagen_direccion, categoria, precio, activo } = req.body;
+        let { nombre, imagen_direccion, precio, categoria, id,activo,descripcion,empresa_responsable } = req.body;
 
         // Optimizacion 1: Validacion basica de datos
         if(!id || !nombre || !categoria || !precio || !activo) {
@@ -112,7 +112,7 @@ export const modifyProduct = async (req, res) => {
         }
 
 
-        let [result] = await ProductModels.updateProduct(nombre, imagen_direccion, precio, categoria, id);
+        let [result] = await ProductModels.updateProduct(nombre, imagen_direccion, precio, categoria, id,activo,descripcion,empresa_responsable);
         console.log(result);
 
         // Optimizacion 2: Testeamos que se actualizara este producto
