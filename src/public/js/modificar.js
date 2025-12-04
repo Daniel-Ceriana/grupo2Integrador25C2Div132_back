@@ -2,9 +2,9 @@ let url = `http://localhost:3000`;
 
 
 // Seleccion de elementos del DOM
-let listaProductos = document.getElementById("lista-productos");
+let contenedorProducto = document.getElementById("contenedor-producto");
 let getProductForm = document.getElementById("getProduct-form");
-let updateFormContainer = document.getElementById("updateFormContainer");
+// let updateFormContainer = document.getElementById("updateFormContainer");
 const id = document.getElementById("productoId").value;
 
 getProductForm.addEventListener("submit", (event) => desglosarEvento(event));
@@ -38,16 +38,24 @@ async function pedirItem(idProd) {
  console.log(producto);
 
  let htmlProducto = `
-     <li class="li-producto">
-             <img class="producto-img" src="${producto.image}" alt="${producto.name}">
-             <p>Id: ${producto.id} / Nombre: ${producto.name} / <strong>Precio: ${producto.price}</strong></p>
-     </li>
-     <li class="li-botonera">
-         <input type="button" id="updateProduct_button" value="Actualizar producto">
-     </li>
+ 
+ <li class="li-producto">
+ <img class="producto-img" src="${producto.imagen_direccion}" alt="${producto.nombre}">
+ <div class="descripcion-lateral">
+     <p>ID: <span>${producto.id}</span></p>
+     <p>Nombre: <span>${producto.nombre}</span></p>
+     <p>Precio: <span>$${producto.precio}</span></p>
+     <p>Categoría: <span>${producto.categoria}</span></p>
+     <p>Activo: <span>${producto.activo}</span></p>
+     <p>Empresa responsable: <span>${producto.empresa_responsable}</span></p>
+ </div>
+</li>
+     <div class="li-botonera">
+         <input class='btn' type="button" id="updateProduct_button" value="Actualizar producto">
+     </div>
  `;
 
- listaProductos.innerHTML = htmlProducto;
+ contenedorProducto.innerHTML = htmlProducto;
 
  let updateProduct_button = document.getElementById("updateProduct_button");
 
@@ -65,32 +73,34 @@ async function crearFormulario(producto) {
     console.table(producto);
 
     let updateFormHTML = `
-        <form id="updateProducts_form">
+    <form id="modificarProducts-container" class="form-modificar">
+    
+    <label for="nombreProd">Nombre</label>
+    <input type="text" name="nombre" id="nombreProd" value="${producto.nombre}" required>
 
-            <input type="hidden" name="id" id="idProd" value="${producto.id}">
+    <label for="imagenProd">Imagen</label>
+    <input type="text" name="image" id="imagenProd" value="${producto.imagen_direccion}" required>
 
-            <label for="nameProd">Nombre</label>
-            <input type="text" name="name" id="nameProd" value="${producto.nombre}" required>
+    <label for="precioProd">Precio</label>
+    <input type="number" name="precio" id="precioProd" min="0" value="${producto.precio}" required>
 
-            <label for="imageProd">Imagen</label>
-            <input type="text" name="image" id="imageProd" value="${producto.imagen_direccion}" required>
+    <label for="categoryProd">Categoria</label>
+    <select name="category" id="categoryProd" value="${producto.categoria}" required>
+        <option value="video-juego">Video juego</option>
+        <option value="consola">Consola</option>
+    </select>
 
-            <label for="priceProd">Precio</label>
-            <input type="number" name="price" id="priceProd" value="${producto.precio}" required>
+    <label for="descripcionProd">Descripcion</label>
+    <textarea name="" id="descripcionProd" cols="30" rows="10" value="${producto.descripcion}"></textarea>
 
-            <label for="categoryProd">Categoria</label>
-            <select name="category" id="categoryProd" required>
-                <option value="food">comida</option>
-                <option value="drink">bebida</option>
-            </select>
+    <label for="empresaProd">Empresa responsable</label>
+    <input type="text" name="empresa" id="empresaProd" value="${producto.empresa_responsable}" required>
 
-            <input type="hidden" name="active" id="activeProd" value="${producto.activo}">
-
-            <input type="submit" value="Actualizar producto">
-        </form>
+    <input class='btn' id="updateProducts_form" class="submit" type="submit" value="Actualizar producto">
+</form>
     `;
 
-    updateFormContainer.innerHTML = updateFormHTML;
+    contenedorProducto.innerHTML = updateFormHTML;
 
     let updateProducts_form = document.getElementById("updateProducts_form");
 

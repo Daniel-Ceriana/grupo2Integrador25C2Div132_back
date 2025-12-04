@@ -1,20 +1,20 @@
 <%- include("partials/head.ejs") %>
+<link rel="stylesheet" href="/css/modificar-styles.css">
 <%- include("partials/nav.ejs") %>
+</head>
 
-<main>
-    <p>El ID recibido es: <%= id %></p>
+<main class="modificar-container">
         <!-- para directamente buscar el producto -->
         <input type="hidden" id="productoId" value="<%= id %>">
     <form id="getProduct-form">
         <label for="idProd">Id del producto</label>
         <input type="number" name="idProd" id="idProd" required>
 
-        <input type="submit" value="Consultar producto">
+        <input class='btn' type="submit" value="Consultar producto">
     </form>
 
-    <hr>
-    <section id="contenedor-productos">
-        <ul id="lista-productos"></ul>
+    <section id="contenedor-producto">
+
     </section>
 
     <section id="updateFormContainer"></section>
