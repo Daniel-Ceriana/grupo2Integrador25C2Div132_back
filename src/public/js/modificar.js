@@ -26,6 +26,7 @@ if(id>0){
     pedirItem(id);
 }
 
+//Aca se muestra el producto para que el administrador verifique que sea el que quiere modificar
 async function pedirItem(idProd) {
  // Enviamos en una peticion GET el id pegado a la url
  let response = await fetch(`${url}/api/products/${idProd}`);
@@ -68,7 +69,8 @@ async function pedirItem(idProd) {
 }
    
 
-
+//Una vez que verifica que es el producto a modificar, se le crea un formulario con todas las
+//opciones que puede configurar
 async function crearFormulario(producto) {
     console.table(producto);
 
@@ -115,6 +117,7 @@ async function crearFormulario(producto) {
 
     let modificarProductsContainer = document.getElementById("modificarProducts-container");
     modificarProductsContainer.addEventListener("submit", event => {
+        //evita que se recargue la pagina
         event.preventDefault();
         event.stopPropagation();
 
@@ -122,7 +125,7 @@ async function crearFormulario(producto) {
     });
 }
 
-
+//se hace la peticion PUT al back con todos los datos del formulario
 async function actualizarProducto(event,id) {
 
     console.log("Preparando datos del formulario para el PUT");
