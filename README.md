@@ -3,7 +3,7 @@ Cruds para manejo de usuarios, ventas, productos
 
 Rutas base:
 
-/api/products
+**/api/products**
 
 
   Get:
@@ -24,7 +24,7 @@ Rutas base:
 
 / Sirve para las vistas, redirige al index
 
-/api/users:
+**/api/users:**
 
 
   /Post: Crea un nuevo usuario 
@@ -36,5 +36,5 @@ Rutas base:
   /logout Destruye la sesion
   
    
-/api/sales
+**/api/sales**
   Post: Guarda los datos de las ventas realizadas
