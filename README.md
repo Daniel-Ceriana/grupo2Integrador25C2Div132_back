@@ -1,4 +1,4 @@
-# Gaming shop Back-end.
+# Gaming shop - Back-end.
 Cruds para manejo de usuarios, ventas, productos
 
 Rutas base:
