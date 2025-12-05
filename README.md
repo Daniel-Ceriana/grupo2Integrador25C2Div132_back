@@ -1,4 +1,4 @@
-# grupo2Integrador25C2Div132_back
+# Gaming shop Back-end.
 Cruds para manejo de usuarios, ventas, productos
 
 Rutas base:
