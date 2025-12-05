@@ -25,10 +25,10 @@ const selectProductWhereId = (id) => {
 // Crear producto
 const insertProduct = (nombre, imagen_direccion, precio, categoria,descripcion,empresa_responsable) => {
 
-     let sql = "INSERT INTO productos (nombre, imagen_direccion, precio,categoria,descripcion,empresa_responsable) VALUES (?, ?, ?, ?, ?, ?)";
+     let sql = "INSERT INTO productos (nombre, imagen_direccion, precio,categoria,descripcion,empresa_responsable,activo) VALUES (?, ?, ?, ?, ?, ?,?)";
 
      // Le enviamos estos valores a la BBDD
-     return connection.query(sql, [nombre, imagen_direccion,precio,categoria ,descripcion,empresa_responsable]);
+     return connection.query(sql, [nombre, imagen_direccion,precio,categoria ,descripcion,empresa_responsable, 1]);
 }
 
 
