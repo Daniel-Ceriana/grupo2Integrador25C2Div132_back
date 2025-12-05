@@ -37,4 +37,6 @@ Rutas base:
   
    
 **/api/sales**
+
+
   Post: Guarda los datos de las ventas realizadas
